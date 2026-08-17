@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "Koki · Personal Site",
-    "description": "Koki's personal website — notes on tech, life, and thoughts."
+    "description": "koki's personal site — a security student's blog: tech notes, CTF challenges, car knowledge, and coding resources."
   },
   "Nav": {
     "home": "Home",
@@ -16,8 +16,8 @@
     "archive": "Archive"
   },
   "Home": {
-    "greeting": "Hi, I'm Koki",
-    "intro": "A student who loves computer science and writing. Here I share study notes, side projects, and thoughts on life. Welcome!",
+    "greeting": "Hi, I'm koki",
+    "intro": "A sophomore majoring in Information Security Application Technology at Shantou Polytechnic. This is my corner of the internet: study notes, CTF challenges, car knowledge, and the good things I've collected along the way.",
     "viewBlog": "Read the blog",
     "aboutMe": "About me",
     "recentPosts": "Recent posts",
