@@ -1,0 +1,44 @@
+{
+  "Metadata": {
+    "title": "Koki · 个人网站",
+    "description": "Koki 的个人网站——记录技术、生活与思考。"
+  },
+  "Nav": {
+    "home": "首页",
+    "blog": "博客",
+    "about": "关于"
+  },
+  "Home": {
+    "greeting": "你好，我是 Koki",
+    "intro": "一名热爱计算机与创作的学生。这里记录我的学习笔记、项目实践与生活随想，欢迎来看看。",
+    "viewBlog": "阅读博客",
+    "aboutMe": "关于我",
+    "recentPosts": "最近文章",
+    "viewAll": "查看全部"
+  },
+  "Blog": {
+    "title": "博客",
+    "description": "关于技术、工具与生活的文章。",
+    "all": "全部",
+    "empty": "还没有文章，敬请期待。"
+  },
+  "Post": {
+    "backToBlog": "返回博客",
+    "readMinutes": "分钟阅读"
+  },
+  "About": {
+    "title": "关于我"
+  },
+  "NotFound": {
+    "title": "页面不存在",
+    "description": "你访问的页面可能已被删除，或从未存在。",
+    "backHome": "返回首页"
+  },
+  "Theme": {
+    "toggle": "切换主题"
+  },
+  "Footer": {
+    "rights": "保留所有权利。",
+    "builtWith": "基于 Next.js 构建"
+  }
+}

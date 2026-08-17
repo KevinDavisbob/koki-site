@@ -1,0 +1,44 @@
+{
+  "Metadata": {
+    "title": "Koki · Personal Site",
+    "description": "Koki's personal website — notes on tech, life, and thoughts."
+  },
+  "Nav": {
+    "home": "Home",
+    "blog": "Blog",
+    "about": "About"
+  },
+  "Home": {
+    "greeting": "Hi, I'm Koki",
+    "intro": "A student who loves computer science and writing. Here I share study notes, side projects, and thoughts on life. Welcome!",
+    "viewBlog": "Read the blog",
+    "aboutMe": "About me",
+    "recentPosts": "Recent posts",
+    "viewAll": "View all"
+  },
+  "Blog": {
+    "title": "Blog",
+    "description": "Articles about tech, tools, and life.",
+    "all": "All",
+    "empty": "No posts yet — stay tuned."
+  },
+  "Post": {
+    "backToBlog": "Back to blog",
+    "readMinutes": "min read"
+  },
+  "About": {
+    "title": "About"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for has been removed or never existed.",
+    "backHome": "Back to home"
+  },
+  "Theme": {
+    "toggle": "Toggle theme"
+  },
+  "Footer": {
+    "rights": "All rights reserved.",
+    "builtWith": "Built with Next.js"
+  }
+}

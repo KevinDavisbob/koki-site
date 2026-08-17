@@ -1,0 +1,35 @@
+---
+title: "Hello, World"
+date: "2026-08-17"
+description: "The first post on Koki's blog — how this site was built and what to expect here."
+tags: ["Misc", "Next.js"]
+---
+
+Welcome to my blog! This is the first post, about where this site came from and what I plan to write here.
+
+## Why blog
+
+Writing is the best way to think. If you can explain something clearly, you truly understand it — and sharing the pitfalls I've hit might save someone else a few hours.
+
+> Writing is thinking made visible.
+
+## How this site was built
+
+- **Framework**: [Next.js](https://nextjs.org) 16 + React 19, App Router + Turbopack
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4, with dark mode support
+- **Content**: posts are written in MDX — Markdown syntax plus code highlighting
+- **i18n**: next-intl, bilingual with Chinese as the default language
+
+Writing a post is as simple as dropping an `.mdx` file into `content/zh/blog` or `content/en/blog`:
+
+```ts
+// That's all — the framework does the rest
+export function greet(name: string) {
+  return `Hello, ${name}!`;
+}
+```
+
+## What's coming
+
+Tech notes, tool reviews, project retrospectives, and occasionally life itself. If there's a topic you'd like me to write about, drop me an email.
