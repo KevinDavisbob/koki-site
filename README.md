@@ -2,7 +2,7 @@
 
 koki 的个人网站：信息安全学生的技术博客，支持中英双语与暗色模式。
 
-- **域名**：koki.asia（审核中，暂用 Vercel 分配地址）
+- **域名**：https://koki.asia（已上线，国内可直连）
 - **作者**：koki（KevinDavisbob）· 汕头职业技术学院 · 信息安全应用技术 · 大二
 - **联系**：3210254261@qq.com
 
@@ -76,5 +76,5 @@ draft: true  # 可选，草稿不发布
 ## 部署
 
 - 生产：`vercel deploy --prod`
-- 国内访问注意：`*.vercel.app` 地址在国内不稳定，绑定自定义域名（koki.asia）后走不同线路基本稳定
-- `sitemap` / `canonical` 已指向 `https://koki.asia`（在 `src/lib/site.ts`），域名上线后自动正确
+- 自定义域名 koki.asia 已绑定（DNS：A 记录 76.76.21.21），国内可直连；`*.vercel.app` 地址在国内不稳定，仅用于临时验证
+- `sitemap` / `canonical` 已指向 `https://koki.asia`（在 `src/lib/site.ts`）
