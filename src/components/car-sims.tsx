@@ -3,13 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
-type SimKey = "engine" | "gear" | "accel" | "fuel";
+type SimKey = "engine" | "gear" | "accel" | "fuel" | "suspension" | "battery" | "vvt";
 
 const simMeta: { key: SimKey; icon: string }[] = [
   { key: "engine", icon: "🔥" },
   { key: "gear", icon: "⚙️" },
   { key: "accel", icon: "🏁" },
   { key: "fuel", icon: "⛽" },
+  { key: "suspension", icon: "🪝" },
+  { key: "battery", icon: "🔋" },
+  { key: "vvt", icon: "⏱️" },
 ];
 
 export function CarSims() {
@@ -21,6 +24,9 @@ export function CarSims() {
     gear: t("gearTitle"),
     accel: t("accelTitle"),
     fuel: t("fuelTitle"),
+    suspension: t("suspensionTitle"),
+    battery: t("batteryTitle"),
+    vvt: t("vvtTitle"),
   };
 
   return (
@@ -48,6 +54,9 @@ export function CarSims() {
         {active === "gear" && <GearSim t={t} />}
         {active === "accel" && <AccelSim t={t} />}
         {active === "fuel" && <FuelSim t={t} />}
+        {active === "suspension" && <SuspensionSim t={t} />}
+        {active === "battery" && <BatterySim t={t} />}
+        {active === "vvt" && <VvtSim t={t} />}
       </div>
     </div>
   );
@@ -425,6 +434,386 @@ function FuelSim({ t }: { t: CarsT }) {
         </div>
       </div>
       <p className="text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("fuelNote")}</p>
+    </div>
+  );
+}
+
+/* ---------------- 悬挂弹簧阻尼模拟 ---------------- */
+
+// 简化弹簧-阻尼模型：a = -k·y - c·v（质量归一化为 1）
+const SPRING_K = 0.045;
+const DAMPING_PRESETS = { soft: 0.02, mid: 0.09, hard: 0.2 } as const;
+
+function SuspensionSim({ t }: { t: CarsT }) {
+  const [mode, setMode] = useState<keyof typeof DAMPING_PRESETS>("mid");
+  const [y, setY] = useState(0); // 车身位移（px，正=向下）
+  const yRef = useRef(0);
+  const vRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+
+  // 常驻物理循环
+  useEffect(() => {
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 16.7, 3); // 归一化到 ~60fps 步长
+      last = now;
+      const c = DAMPING_PRESETS[mode];
+      const a = -SPRING_K * yRef.current - c * vRef.current;
+      vRef.current += a * dt;
+      yRef.current += vRef.current * dt;
+      // 地面限制
+      if (yRef.current > 60) {
+        yRef.current = 60;
+        vRef.current = Math.min(vRef.current, 0);
+      }
+      if (yRef.current < -60) {
+        yRef.current = -60;
+        vRef.current = Math.max(vRef.current, 0);
+      }
+      setY(yRef.current);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [mode]);
+
+  function bump() {
+    vRef.current -= 26; // 车轮受到向上的冲击
+  }
+
+  function reset() {
+    yRef.current = 0;
+    vRef.current = 0;
+    setY(0);
+  }
+
+  // 弹簧间隙（随车身位置伸缩），画成左右交替的之字形
+  const gapTop = 92 + y; // 车身底部
+  const gapBottom = 178; // 车轮顶部
+  const gap = Math.max(10, gapBottom - gapTop);
+  const coils = 6;
+  const xs = [118, 162];
+  const zigzag: string[] = [];
+  for (let i = 0; i <= coils; i++) {
+    const px = xs[i % 2];
+    const py = gapTop + (i / coils) * gap;
+    zigzag.push(`${px},${py}`);
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {t("suspensionHint")}
+      </p>
+      <svg viewBox="0 0 300 220" className="w-full max-w-xs" role="img">
+        {/* 地面 */}
+        <line x1="20" y1="205" x2="280" y2="205" stroke="currentColor" strokeWidth="3" className="text-zinc-400 dark:text-zinc-600" />
+        {/* 减速带 */}
+        <path d="M 235 205 Q 250 195 265 205" fill="none" stroke="#f59e0b" strokeWidth="4" />
+
+        {/* 车轮（固定） */}
+        <circle cx="140" cy="190" r="16" fill="#27272a" />
+        <circle cx="140" cy="190" r="7" fill="#a1a1aa" />
+
+        {/* 弹簧（绿色，随间隙伸缩） */}
+        <polyline points={zigzag.join(" ")} fill="none" stroke="#16a34a" strokeWidth="3" />
+        {/* 减震器（黄色） */}
+        <line x1="186" y1={gapTop} x2="186" y2={gapTop + gap * 0.6} stroke="#f59e0b" strokeWidth="4" />
+        <rect x="180" y={gapTop + gap * 0.6} width="12" height={gap * 0.4} rx="2" fill="none" stroke="#f59e0b" strokeWidth="2" />
+
+        {/* 车身（随 y 移动） */}
+        <g transform={`translate(0 ${y})`}>
+          <rect x="70" y="48" width="160" height="44" rx="12" fill="#6366f1" opacity="0.9" />
+          <rect x="90" y="56" width="40" height="12" rx="3" fill="#e4e4e7" opacity="0.8" />
+          <rect x="170" y="56" width="40" height="12" rx="3" fill="#e4e4e7" opacity="0.8" />
+        </g>
+        <line x1="70" y1={92 + y} x2="230" y2={92 + y} stroke="#4f46e5" strokeWidth="2" opacity="0.5" />
+      </svg>
+
+      {/* 阻尼模式 */}
+      <div className="flex flex-wrap justify-center gap-2">
+        {(
+          [
+            { key: "soft", label: t("suspensionSoft") },
+            { key: "mid", label: t("suspensionMid") },
+            { key: "hard", label: t("suspensionHard") },
+          ] as { key: keyof typeof DAMPING_PRESETS; label: string }[]
+        ).map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setMode(key)}
+            className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+              mode === key
+                ? "bg-indigo-600 text-white"
+                : "border border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={bump}
+          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-400"
+        >
+          {t("suspensionBump")}
+        </button>
+        <button
+          type="button"
+          onClick={reset}
+          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:border-zinc-400 dark:border-zinc-700"
+        >
+          {t("suspensionReset")}
+        </button>
+      </div>
+
+      <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+        {mode === "soft"
+          ? t("suspensionSoftNote")
+          : mode === "hard"
+            ? t("suspensionHardNote")
+            : t("suspensionExplain")}
+      </p>
+    </div>
+  );
+}
+
+/* ---------------- 电池与动能回收模拟 ---------------- */
+
+function BatterySim({ t }: { t: CarsT }) {
+  const [soc, setSoc] = useState(80);
+  const [power, setPower] = useState(0); // kW，正=消耗，负=回收
+  const [flash, setFlash] = useState<"drain" | "regen" | null>(null);
+
+  function act(delta: number, kw: number) {
+    setSoc((s) => Math.min(100, Math.max(0, s + delta)));
+    setPower(kw);
+    setFlash(kw < 0 ? "regen" : "drain");
+    setTimeout(() => setFlash(null), 600);
+  }
+
+  const socColor = soc > 50 ? "bg-emerald-500" : soc > 20 ? "bg-amber-500" : "bg-rose-500";
+  const regen = power < 0;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("batteryHint")}</p>
+
+      {/* SOC 电量条 */}
+      <div>
+        <div className="flex items-baseline justify-between">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">{t("batterySoc")}</p>
+          <p className="text-xl font-bold tabular-nums">{Math.round(soc)}%</p>
+        </div>
+        <div className="mt-2 h-5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-900">
+          <div
+            className={`h-full rounded-full transition-all duration-300 ${socColor}`}
+            style={{ width: `${soc}%` }}
+          />
+        </div>
+        <p className="mt-1 text-xs text-zinc-400">
+          ≈ {Math.round(soc * 4.5)} km（按 22 kWh/100km 估算）
+        </p>
+      </div>
+
+      {/* 功率表 */}
+      <div className="rounded-lg bg-zinc-100 px-4 py-3 dark:bg-zinc-900">
+        <div className="flex items-baseline justify-between">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("batteryPower")}</p>
+          <p
+            className={`text-lg font-bold tabular-nums ${
+              regen ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
+            }`}
+          >
+            {power > 0 ? `+${power}` : power} kW
+          </p>
+        </div>
+        {/* 功率指针条：中点 0，向右消耗，向左回收 */}
+        <div className="relative mt-2 h-3 rounded-full bg-zinc-200 dark:bg-zinc-700">
+          <div className="absolute left-1/2 top-0 h-full w-0.5 bg-zinc-400" />
+          {regen ? (
+            <div
+              className="absolute right-1/2 top-0 h-full rounded-l-full bg-emerald-500 transition-all duration-300"
+              style={{ width: `${Math.min(50, (Math.abs(power) / 200) * 100) / 2}%` }}
+            />
+          ) : (
+            <div
+              className="absolute left-1/2 top-0 h-full rounded-r-full bg-rose-500 transition-all duration-300"
+              style={{ width: `${Math.min(50, (Math.abs(power) / 200) * 100) / 2}%` }}
+            />
+          )}
+        </div>
+        {flash === "regen" && (
+          <p className="mt-2 text-center text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+            ⚡ {t("batteryRegen")} → {t("batterySoc")} ↑
+          </p>
+        )}
+      </div>
+
+      {/* 驾驶操作 */}
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => act(-2.5, 150)}
+          className="rounded-lg bg-rose-600 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-rose-500"
+        >
+          🚀 {t("batteryAccel")} (-2.5%)
+        </button>
+        <button
+          type="button"
+          onClick={() => act(-0.4, 20)}
+          className="rounded-lg bg-zinc-500 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-400"
+        >
+          🛣️ {t("batteryCruise")} (-0.4%)
+        </button>
+        <button
+          type="button"
+          onClick={() => act(0.3, -10)}
+          className="rounded-lg bg-emerald-600 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
+        >
+          🪂 {t("batteryCoast")} (+0.3%)
+        </button>
+        <button
+          type="button"
+          onClick={() => act(1.0, -40)}
+          className="rounded-lg bg-emerald-700 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-600"
+        >
+          🛑 {t("batteryBrake")} (+1.0%)
+        </button>
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          setSoc(80);
+          setPower(0);
+          setFlash(null);
+        }}
+        className="self-center rounded-lg border border-zinc-300 px-4 py-1.5 text-sm font-medium transition-colors hover:border-zinc-400 dark:border-zinc-700"
+      >
+        {t("batteryReset")}
+      </button>
+
+      <p className="text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("batteryNote")}</p>
+    </div>
+  );
+}
+
+/* ---------------- VVT 气门正时模拟 ---------------- */
+
+function valveLift(theta: number, center: number, duration: number) {
+  const lift = (1 + Math.cos((2 * Math.PI * (theta - center)) / duration)) / 2;
+  return lift > 0.001 ? lift : 0;
+}
+
+function VvtSim({ t }: { t: CarsT }) {
+  const [overlap, setOverlap] = useState(20); // 气门重叠角（°）
+
+  // 排气门：中心 360°（排气上止点前开启、后关闭）
+  const exhaustCenter = 360;
+  const exhaustDuration = 240;
+  // 进气门：上止点（720°/0°）前 overlap/2 开启
+  const intakeOpen = 720 - overlap / 2;
+  const intakeCenter = (intakeOpen + (intakeOpen + 240)) / 2;
+
+  // 生成曲线路径
+  const steps = 360;
+  const intakePath: string[] = [];
+  const exhaustPath: string[] = [];
+  let overlapStart: number | null = null;
+  let overlapEnd: number | null = null;
+
+  for (let i = 0; i <= steps; i++) {
+    const theta = (i / steps) * 720;
+    const x = 40 + (theta / 720) * 220;
+    const inLift = valveLift(theta, intakeCenter, 240);
+    const exLift = valveLift(theta, exhaustCenter, exhaustDuration);
+    const yIn = 150 - inLift * 120;
+    const yEx = 150 - exLift * 120;
+    intakePath.push(`${x},${yIn}`);
+    exhaustPath.push(`${x},${yEx}`);
+    if (inLift > 0 && exLift > 0) {
+      if (overlapStart === null) overlapStart = theta;
+      overlapEnd = theta;
+    }
+  }
+
+  // 重叠区域填充多边形
+  const fillX = (theta: number) => 40 + (theta / 720) * 220;
+  const fillY = (theta: number) => 150 - Math.min(valveLift(theta, intakeCenter, 240), valveLift(theta, exhaustCenter, exhaustDuration)) * 120;
+  let overlapFill = "";
+  if (overlapStart !== null && overlapEnd !== null) {
+    const pts: string[] = [];
+    const s = Math.max(0, overlapStart - 10);
+    const e = Math.min(720, overlapEnd + 10);
+    for (let theta = s; theta <= e; theta += 2) {
+      pts.push(`${fillX(theta)},${fillY(theta)}`);
+    }
+    for (let theta = e; theta >= s; theta -= 2) {
+      pts.push(`${fillX(theta)},150`);
+    }
+    overlapFill = pts.join(" ");
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {t("vvtHint")}
+      </p>
+      <svg viewBox="0 0 300 190" className="w-full max-w-xs" role="img">
+        {/* 轴 */}
+        <line x1="40" y1="150" x2="260" y2="150" stroke="currentColor" strokeWidth="1.5" className="text-zinc-300 dark:text-zinc-700" />
+        {/* 上止点 / 下止点标记 */}
+        {[
+          { x: 40, label: "TDC 0°" },
+          { x: 150, label: "BDC" },
+          { x: 260, label: "TDC 720°" },
+        ].map((m) => (
+          <text key={m.label} x={m.x} y="170" textAnchor="middle" fontSize="9" fill="currentColor" className="text-zinc-400">
+            {m.label}
+          </text>
+        ))}
+
+        {/* 重叠区域（进排气同时打开） */}
+        {overlapFill && <polygon points={overlapFill} fill="#f43f5e" opacity="0.3" />}
+
+        {/* 排气门曲线 */}
+        <polyline points={exhaustPath.join(" ")} fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+        {/* 进气门曲线（受 VVT 影响） */}
+        <polyline points={intakePath.join(" ")} fill="none" stroke="#6366f1" strokeWidth="2.5" />
+
+        {/* 图例 */}
+        <line x1="60" y1="24" x2="80" y2="24" stroke="#6366f1" strokeWidth="2.5" />
+        <text x="86" y="28" fontSize="10" fill="#6366f1">进气门</text>
+        <line x1="140" y1="24" x2="160" y2="24" stroke="#f59e0b" strokeWidth="2.5" />
+        <text x="166" y="28" fontSize="10" fill="#f59e0b">排气门</text>
+        <rect x="224" y="18" width="14" height="12" fill="#f43f5e" opacity="0.3" rx="2" />
+        <text x="242" y="28" fontSize="10" fill="#f43f5e">重叠角</text>
+      </svg>
+
+      <label className="flex w-full max-w-xs items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("vvtOverlap")}
+        <input
+          type="range"
+          min={0}
+          max={60}
+          value={overlap}
+          onChange={(e) => setOverlap(Number(e.target.value))}
+          className="flex-1 accent-indigo-600"
+        />
+        <span className="w-12 text-right tabular-nums">{overlap}°</span>
+      </label>
+
+      <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+        {overlap < 20 ? t("vvtLowSpeed") : t("vvtHighSpeed")}
+        <br />
+        {t("vvtExplain")}
+      </p>
     </div>
   );
 }

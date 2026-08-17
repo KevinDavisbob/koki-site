@@ -39,6 +39,21 @@ const zh: CarsContent = {
       ],
     },
     {
+      key: "vvt",
+      title: "发动机技术：VVT 可变气门正时",
+      icon: "⏱️",
+      paragraphs: [
+        "发动机的「呼吸」由气门控制：什么时候开、开多大、开多久，决定了进多少空气、烧多少油。传统发动机的气门开闭时刻是固定的，只能在某个转速区间做到最优——VVT（可变气门正时）就是为了打破这个限制。",
+        "VVT 的原理：用液压或电机旋转凸轮轴相对相位，改变气门开闭时机。低速时推迟进气门关闭（阿特金森循环效果），让膨胀比大于压缩比，油耗显著下降；高转速时提前开启进气门，吸入更多空气，功率更大。进排气都能调的叫双 VVT——丰田 VVT-i、本田 i-VTEC、宝马 VANOS 都是它的门派名称。",
+        "更进一步是可变气门升程：本田 VTEC 在高转速时切换到「大凸轮」，气门开得更大更久，发动机性格瞬间从家用变暴躁。这些技术配合缸内直喷，让主流发动机热效率从 30% 出头提升到 40% 以上。",
+      ],
+      points: [
+        "气门正时决定发动机性格：VVT 让低速省油与高速有力兼得",
+        "阿特金森循环 = 进气门晚关：膨胀比 > 压缩比，热效率更高",
+        "双 VVT（进排气都调）已成主流，可变升程（VTEC）是进阶玩法",
+      ],
+    },
+    {
       key: "gearbox",
       title: "变速箱：MT / AT / CVT / DCT",
       icon: "⚙️",
@@ -51,6 +66,21 @@ const zh: CarsContent = {
         "传动比 = 发动机转速 ÷ 车轮转速，挡位越高传动比越低",
         "CVT 最平顺省油、AT 最均衡耐用、DCT 换挡最快、MT 最纯粹",
         "家用避坑口诀：干式双离合慎重，CVT 别长期暴力地板油",
+      ],
+    },
+    {
+      key: "torque-converter",
+      title: "变速箱技术：液力变矩器与多档位",
+      icon: "🌊",
+      paragraphs: [
+        "AT 变速箱的灵魂是液力变矩器：发动机带动「泵轮」搅动油液，油液带动「涡轮」——动力靠液体传递，没有硬连接。这带来两个好处：起步时放大扭矩（变矩比可达 2:1，帮助车辆平稳起步），换挡时动力不断、天生平顺。代价是液力滑差造成效率损失，这也是老 AT 费油的原因。",
+        "解决效率问题的装置叫**锁止离合器**：巡航时把泵轮和涡轮机械锁死，液力损耗归零，传动效率接近手动挡。现代 AT 甚至能 2 挡就锁止，油耗与双离合的差距已经很小。",
+        "多档位是另一个趋势：6AT → 8AT → 10AT，齿比更密意味着发动机更多时间工作在高效区间——巡航转速更低更省油，换挡更平顺。别再用「档位越多越高级」判断好坏，关键看调校：一套平顺听话的 6AT 比一套顿挫的 8AT 强得多。",
+      ],
+      points: [
+        "液力传动 = 天生平顺 + 起步扭矩放大，代价是滑差损耗",
+        "锁止离合器：巡航时机械锁死，效率直逼手动挡",
+        "多档位 = 齿比更密 = 发动机更多时间处于高效区间",
       ],
     },
     {
@@ -99,6 +129,36 @@ const zh: CarsContent = {
       ],
     },
     {
+      key: "air-suspension",
+      title: "底盘技术：空气悬挂与电磁悬挂",
+      icon: "🎈",
+      paragraphs: [
+        "空气悬挂用「空气弹簧」代替钢制螺旋弹簧：气泵给气囊充气，车身高度可调——高速时降低车身减小风阻，烂路时升高底盘提升通过性；气囊刚度随气压变化，舒适性上限很高。代表：奔驰 AIRMATIC、保时捷 PASM，以及蔚来、理想等新势力的高配车型。",
+        "电磁悬挂（CDC、MagneRide）管的是**阻尼**：减震器里充满磁流变液或电磁阀实时调节油路，传感器以毫秒级频率检测车身动态，阻尼连续可调——过弯变硬抑制侧倾，直线变软吸收颠簸，操控与舒适兼得。",
+        "代价也很实在：空气悬挂结构复杂，气泵和气囊属于易损件，8~10 万公里后维修费用不菲；电磁悬挂同样昂贵。买二手豪车时，「带空气悬挂」既是卖点也是后续支出预警。",
+      ],
+      points: [
+        "空气弹簧调高度与刚度，电磁阻尼调软硬——两套系统常组合出现",
+        "空气悬挂舒适上限高，但气泵气囊是易损件，维修贵",
+        "电磁悬挂毫秒级调节阻尼，兼顾操控与舒适",
+      ],
+    },
+    {
+      key: "platform",
+      title: "底盘平台：MQB / TNGA / SEA",
+      icon: "🧩",
+      paragraphs: [
+        "平台是一套可共享的底盘架构：悬架、转向、电气、车身结构打包成「地基」，不同车型在同一地基上盖楼。大众 MQB 一个平台从高尔夫覆盖到途昂，研发和制造成本大幅摊薄——这就是模块化平台的商业魔力。",
+        "丰田 TNGA 强调低重心与高刚性：发动机和座椅高度降低，车身扭转刚度提升，开起来的质感比老丰田脱胎换骨。吉利/极氪的 SEA 浩瀚架构是原生纯电平台：电池平铺在底盘中央，没有发动机的束缚，前后悬更短、轴距利用率极高，同样的车长做出更大的空间。",
+        "「油改电」和「原生纯电平台」差别明显：油改电的电池塞在底盘下凸起，后排地板隆起、空间被压缩；原生平台的电池包与底盘一体化（CTB），车内空间和重心都更优。买电车认准原生平台。",
+      ],
+      points: [
+        "平台 = 共享底盘架构：MQB（大众）、TNGA（丰田）、SEA 浩瀚（吉利/极氪）",
+        "TNGA 卖点：低重心 + 高刚性；SEA 卖点：原生纯电 + 电池底盘一体",
+        "原生纯电平台 >> 油改电：空间、重心、安全都更优",
+      ],
+    },
+    {
       key: "newenergy",
       title: "新能源：HEV / PHEV / BEV / 增程",
       icon: "🔋",
@@ -113,6 +173,36 @@ const zh: CarsContent = {
         "没有充电条件别硬买纯电——充电体验决定用车体验",
       ],
     },
+    {
+      key: "battery",
+      title: "动力电池：三元锂 vs 磷酸铁锂",
+      icon: "🔋",
+      paragraphs: [
+        "电动车的心脏是电池，主流配方两种：**三元锂（NCM）**能量密度高（250 Wh/kg 以上）、低温性能好、充电快，但价格贵、循环寿命约 1000~1500 次；**磷酸铁锂（LFP）**能量密度稍低（160~200 Wh/kg）、冬天衰减更明显，但便宜、循环寿命 3000 次以上、热稳定性好——针刺不起火，安全性口碑更好。",
+        "比亚迪刀片电池是磷酸铁锂的结构创新：把电芯做成长条「刀片」直接排布成包（CTP 无模组技术），体积利用率大幅提升，把磷酸铁锂的密度短板补回不少。",
+        "**BMS 电池管理系统**是电池的大脑：实时监控每节电芯的电压和温度、执行均衡、防止过充过放。快充与慢充的选择也重要：慢充对电池最友好，长期依赖大功率快充会加速衰减。电池寿命看两个维度——循环寿命（充放次数）和日历寿命（随时间自然老化），家用车往往是日历寿命先到。",
+      ],
+      points: [
+        "三元锂：高密度、耐低温、贵；磷酸铁锂：长寿、安全、便宜",
+        "刀片电池 = 磷酸铁锂 + CTP 结构创新，补上密度短板",
+        "BMS 管好每节电芯；慢充为主、快充应急，电池能多用好几年",
+      ],
+    },
+    {
+      key: "ev-tech",
+      title: "电动车新技术：回收 / 热泵 / 800V / 固态",
+      icon: "🚀",
+      paragraphs: [
+        "**动能回收**：松油门或踩刹车时，电机切换成发电机模式，把动能转回电能存进电池。城市工况能回收 20%~30% 的能量，单踏板模式下几乎可以只用油门开车。",
+        "**热泵空调**：从车外空气中「搬运」热量来制热，冬季耗电量只有传统 PTC 电加热的一半左右——对北方用户来说，有没有热泵直接决定冬天续航打几折。",
+        "**800V 高压平台**：充电功率 = 电压 × 电流，把电压从 400V 提升到 800V，同样的电流下充电功率翻倍——「充电 10 分钟、续航 300 公里」成为可能。保时捷 Taycan、小鹏 G9、极氪 001 已量产。**固态电池**：用固态电解质取代液态，能量密度有翻倍潜力且更安全，是行业公认的下一代技术，预计 2027 年前后开始量产装车。",
+      ],
+      points: [
+        "回收 → 热泵 → 800V → 固态：电动车技术的演进主线",
+        "热泵空调是北方冬季续航的关键配置",
+        "800V 让 250kW+ 快充落地；固态电池是下一个十年",
+      ],
+    },
   ],
   terms: [
     { term: "马力（hp）", definition: "功率单位，1 马力 ≈ 0.735 kW。决定车的最高速度和持续动力，越大越快。" },
@@ -125,6 +215,20 @@ const zh: CarsContent = {
     { term: "离地间隙", definition: "底盘最低点到地面的距离，SUV 一般 170~220mm，轿车 120~150mm。决定通过性。" },
     { term: "CLTC / WLTC", definition: "两种续航测试标准。CLTC（国内）数字好看但偏乐观，看真实续航请参考 WLTC 打 7~8 折。" },
     { term: "悬挂结构", definition: "连接车轮与车身的机构总称，常见麦弗逊、双叉臂、多连杆、扭力梁。" },
+    { term: "VVT 可变气门正时", definition: "调整气门开闭时机，让发动机低速省油、高速有力。丰田 VVT-i、本田 i-VTEC 都是。" },
+    { term: "缸内直喷", definition: "燃油直接喷进气缸（而非进气道），雾化更好、更省油，但积碳风险更高。" },
+    { term: "液力变矩器", definition: "AT 变速箱里靠油液传递动力的装置，起步平顺、能放大扭矩，锁止后效率接近手动挡。" },
+    { term: "锁止离合器", definition: "巡航时把液力变矩器的泵轮和涡轮机械锁死，消除液力损耗。" },
+    { term: "空气悬挂", definition: "用气囊代替钢弹簧，车身高度和刚度可调，舒适性上限高但维修贵。" },
+    { term: "电磁悬挂", definition: "阻尼毫秒级连续可调（CDC/MagneRide），兼顾操控与舒适。" },
+    { term: "底盘平台", definition: "可共享的底盘架构，如大众 MQB、丰田 TNGA、吉利 SEA 浩瀚。" },
+    { term: "三元锂电池", definition: "NCM/NCA：能量密度高、耐低温，价格贵、循环寿命约 1000-1500 次。" },
+    { term: "磷酸铁锂电池", definition: "LFP：安全、长寿（3000 次+）、便宜，密度稍低。刀片电池即此路线。" },
+    { term: "BMS", definition: "电池管理系统：监控每节电芯电压温度、均衡、防过充过放。" },
+    { term: "动能回收", definition: "减速时电机反转发电，把动能存回电池，城市工况可回收 20-30% 能量。" },
+    { term: "热泵空调", definition: "从空气搬热制热，冬季比 PTC 电加热省电约一半。" },
+    { term: "800V 高压平台", definition: "提高充电电压让快充功率翻倍，支持 250kW+ 充电。" },
+    { term: "固态电池", definition: "固态电解质替代液态，能量密度更高更安全，预计 2027 年前后量产。" },
   ],
 };
 
@@ -148,6 +252,21 @@ const en: CarsContent = {
       ],
     },
     {
+      key: "vvt",
+      title: "Engine Tech: Variable Valve Timing",
+      icon: "⏱️",
+      paragraphs: [
+        "An engine's 'breathing' is controlled by its valves: when they open, how far, and for how long determines how much air enters and how much fuel burns. Traditional engines have fixed valve timing, optimal at only one rpm band — VVT (variable valve timing) exists to break that limit.",
+        "How VVT works: hydraulic or electric actuators rotate the camshaft's relative phase, changing valve timing. At low rpm the intake closes late (the Atkinson-cycle effect) so the expansion ratio exceeds the compression ratio — fuel consumption drops noticeably. At high rpm the intake opens early, swallowing more air for more power. Adjusting both intake and exhaust is called dual VVT — Toyota's VVT-i, Honda's i-VTEC and BMW's VANOS are all flavors of it.",
+        "The next step is variable valve lift: Honda's VTEC switches to a 'big cam' at high rpm, opening the valves wider and longer — the engine's character flips from family car to firecracker. Combined with direct injection, these technologies pushed mainstream thermal efficiency from just over 30% to beyond 40%.",
+      ],
+      points: [
+        "Valve timing defines an engine's character — VVT delivers low-rpm economy and high-rpm power at once",
+        "The Atkinson cycle = late intake closing: expansion ratio > compression ratio, higher thermal efficiency",
+        "Dual VVT is mainstream; variable lift (VTEC) is the advanced move",
+      ],
+    },
+    {
       key: "gearbox",
       title: "Gearboxes: MT / AT / CVT / DCT",
       icon: "⚙️",
@@ -160,6 +279,21 @@ const en: CarsContent = {
         "Gear ratio = engine speed ÷ wheel speed; higher gears mean lower ratios",
         "CVT is smoothest and most efficient, AT most balanced, DCT fastest-shifting, MT most engaging",
         "Avoid dry-clutch DCTs; don't thrash a CVT with repeated full-throttle launches",
+      ],
+    },
+    {
+      key: "torque-converter",
+      title: "Gearbox Tech: Torque Converters & More Gears",
+      icon: "🌊",
+      paragraphs: [
+        "The soul of the AT gearbox is the torque converter: the engine spins a 'pump wheel' that churns oil, and the oil spins a 'turbine' — power transfers through fluid with no hard connection. That brings two gifts: torque multiplication at launch (up to 2:1, smoothing the start) and uninterrupted, inherently smooth shifts. The price: hydraulic slip wastes energy — the reason old automatics drank fuel.",
+        "The efficiency fix is the **lock-up clutch**: at cruise, it mechanically locks pump and turbine together, eliminating slip and matching manual-transmission efficiency. Modern ATs even lock up in 2nd gear; the fuel-economy gap with DCTs has nearly closed.",
+        "More gears is the other trend: 6AT → 8AT → 10AT. Denser ratios keep the engine in its efficient zone more of the time — lower cruise rpm, better economy, smoother shifts. But don't judge by gear count alone: a smooth, obedient 6AT beats a jerky 8AT every time.",
+      ],
+      points: [
+        "Fluid coupling = inherently smooth + launch torque multiplication, at the cost of slip losses",
+        "The lock-up clutch mechanically locks at cruise — efficiency approaches a manual",
+        "More gears = denser ratios = the engine spends more time in its efficient zone",
       ],
     },
     {
@@ -208,6 +342,36 @@ const en: CarsContent = {
       ],
     },
     {
+      key: "air-suspension",
+      title: "Chassis Tech: Air & Adaptive Suspension",
+      icon: "🎈",
+      paragraphs: [
+        "Air suspension replaces steel coil springs with 'air springs': a compressor inflates rubber bellows, making ride height adjustable — lower at speed for less drag, higher on rough roads for clearance — and stiffness varies with pressure, raising the comfort ceiling. Examples: Mercedes AIRMATIC, Porsche PASM, and high-trim models from NIO and Li Auto.",
+        "Adaptive (electromagnetic) suspension governs **damping**: dampers filled with magnetorheological fluid or electronic valves adjust in real time, with sensors reading body motion every millisecond. Stiffen for corners to kill body roll, soften on straights to absorb bumps — handling and comfort at once.",
+        "The bill is real: air suspension is complex, and pumps and bellows are wear items — repairs past 80-100k km aren't cheap; adaptive dampers cost plenty too. On a used luxury car, 'has air suspension' is both a selling point and a future-expense warning.",
+      ],
+      points: [
+        "Air springs adjust height and stiffness; adaptive dampers adjust firmness — often paired",
+        "Air suspension's comfort ceiling is high, but pumps and bellows wear out and cost real money",
+        "Adaptive damping adjusts in milliseconds — comfort and control together",
+      ],
+    },
+    {
+      key: "platform",
+      title: "Chassis Platforms: MQB / TNGA / SEA",
+      icon: "🧩",
+      paragraphs: [
+        "A platform is a shareable chassis architecture: suspension, steering, electrics and body structure bundled as a 'foundation' that many models build on. VW's MQB spans from the Golf to the Teramont, slashing R&D and manufacturing cost — that's the business magic of modular platforms.",
+        "Toyota's TNGA emphasizes a low center of gravity and high rigidity: engines and seats sit lower and torsional stiffness rises — the cars feel transformed compared to old Toyotas. Geely/Zeekr's SEA architecture is a native EV platform: the battery lies flat in the floor, and with no engine to accommodate, overhangs shrink and wheelbase utilization soars — more interior room from the same length.",
+        "'Oil-to-EV' conversions differ sharply from native platforms: converted cars carry battery packs that bulge under the floor, eating space; native platforms integrate battery and chassis (CTB), improving room, center of gravity and safety. Buy EVs on native platforms.",
+      ],
+      points: [
+        "A platform is a shared chassis architecture: MQB (VW), TNGA (Toyota), SEA (Geely/Zeekr)",
+        "TNGA's pitch: low center of gravity + high rigidity; SEA's: native EV + integrated battery floor",
+        "Native EV platforms beat oil-to-EV conversions on space, balance and safety",
+      ],
+    },
+    {
       key: "newenergy",
       title: "New Energy: HEV / PHEV / BEV / EREV",
       icon: "🔋",
@@ -222,6 +386,36 @@ const en: CarsContent = {
         "No charging access? Don't buy a BEV — charging experience defines EV ownership",
       ],
     },
+    {
+      key: "battery",
+      title: "Traction Batteries: NCM vs LFP",
+      icon: "🔋",
+      paragraphs: [
+        "The heart of an EV is its battery, with two dominant chemistries: **NCM (nickel-cobalt-manganese)** packs high energy density (250+ Wh/kg), better cold-weather performance and faster charging — but costs more and cycles around 1000-1500 times. **LFP (lithium iron phosphate)** is slightly less dense (160-200 Wh/kg) and fades more in winter, but it's cheap, cycles 3000+ times, and its thermal stability is outstanding — no fire in nail-penetration tests, a safety reputation winner.",
+        "BYD's Blade Battery is a structural LFP innovation: cells shaped as long 'blades' pack directly into the pack (CTP, cell-to-pack, no modules), recovering much of the density gap.",
+        "The **BMS (battery management system)** is the battery's brain: it monitors every cell's voltage and temperature, balances them, and prevents overcharge and over-discharge. Charging habits matter too: slow charging is kindest; heavy reliance on high-power fast charging accelerates degradation. Battery life has two clocks — cycle life (charge cycles) and calendar life (natural aging) — and for family cars, calendar aging usually wins.",
+      ],
+      points: [
+        "NCM: dense, cold-capable, pricey; LFP: long-lived, safe, cheap",
+        "The Blade Battery = LFP + CTP structural innovation, closing the density gap",
+        "The BMS guards every cell; slow-charge daily and fast-charge only when needed",
+      ],
+    },
+    {
+      key: "ev-tech",
+      title: "EV Tech: Regen / Heat Pump / 800V / Solid-State",
+      icon: "🚀",
+      paragraphs: [
+        "**Regenerative braking**: lift off or brake, and the motor switches to generator mode, converting kinetic energy back into battery charge. City driving recovers 20-30% of energy; in one-pedal mode you can almost drive with the accelerator alone.",
+        "**Heat-pump climate control** 'moves' heat from the outside air to warm the cabin, using roughly half the power of resistive PTC heaters in winter — for northern owners, a heat pump directly decides how hard winter cuts range.",
+        "**800V high-voltage platforms**: charging power = voltage × current, so going from 400V to 800V doubles the power at the same current — '10 minutes for 300 km' becomes possible. The Porsche Taycan, XPeng G9 and Zeekr 001 are already on it. **Solid-state batteries** replace the liquid electrolyte with a solid one, promising double the density and better safety — the industry's consensus next generation, with mass production expected around 2027.",
+      ],
+      points: [
+        "Regen → heat pump → 800V → solid-state: the main line of EV evolution",
+        "A heat pump is the key spec for winter range in cold climates",
+        "800V enables 250kW+ fast charging; solid-state is the next decade",
+      ],
+    },
   ],
   terms: [
     { term: "Horsepower (hp)", definition: "A power unit; 1 hp ≈ 0.735 kW. Determines top speed and sustained acceleration." },
@@ -234,6 +428,20 @@ const en: CarsContent = {
     { term: "Ground clearance", definition: "Lowest chassis point to the ground; SUVs 170–220 mm, sedans 120–150 mm. Defines how rough a road you can take." },
     { term: "CLTC / WLTC", definition: "Range test standards. CLTC (China) looks optimistic — for realistic range, take WLTC and knock off 20–30%." },
     { term: "Suspension type", definition: "The linkage between wheels and body: MacPherson, double-wishbone, multi-link, torsion beam." },
+    { term: "VVT", definition: "Variable valve timing — low-rpm economy plus high-rpm power. Toyota VVT-i and Honda i-VTEC are variants." },
+    { term: "Direct injection", definition: "Fuel sprayed straight into the cylinder (not the intake port): better atomization and economy, higher carbon-buildup risk." },
+    { term: "Torque converter", definition: "The fluid coupling inside an AT — smooth launches and torque multiplication; lock-up restores efficiency." },
+    { term: "Lock-up clutch", definition: "Mechanically locks the torque converter at cruise, eliminating hydraulic losses." },
+    { term: "Air suspension", definition: "Air bellows instead of steel springs — adjustable height and stiffness, high comfort ceiling, pricey repairs." },
+    { term: "Adaptive suspension", definition: "Millisecond-level continuously adjustable damping (CDC/MagneRide) — comfort plus control." },
+    { term: "Platform", definition: "A shareable chassis architecture: VW MQB, Toyota TNGA, Geely SEA." },
+    { term: "NCM battery", definition: "High density, cold-tolerant, expensive; ~1000-1500 cycles." },
+    { term: "LFP battery", definition: "Safe, long-lived (3000+ cycles), cheap; slightly lower density. The Blade Battery follows this path." },
+    { term: "BMS", definition: "Battery management system — monitors every cell, balances them, prevents overcharge/over-discharge." },
+    { term: "Regenerative braking", definition: "The motor becomes a generator when slowing, recovering 20-30% of energy in city driving." },
+    { term: "Heat pump", definition: "Moves heat from the air to warm the cabin, using about half the power of resistive heating." },
+    { term: "800V platform", definition: "Doubles charging power at the same current, enabling 250kW+ fast charging." },
+    { term: "Solid-state battery", definition: "Solid electrolyte instead of liquid — denser and safer; mass production expected around 2027." },
   ],
 };
 
