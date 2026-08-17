@@ -1,8 +1,7 @@
 // 站点全局配置：域名、站名、社交链接等，改这里即可
 export const siteConfig = {
   name: "Koki",
-  // TODO: 绑定 koki.cn 域名后改回 https://koki.cn
-  url: "https://koki-site-ornewkv15-koki24.vercel.app",
+  url: "https://koki.cn",
   description: {
     zh: "记录技术、生活与思考。",
     en: "Notes on tech, life, and thoughts.",
