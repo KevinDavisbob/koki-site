@@ -1,6 +1,25 @@
-# koki.cn
+# koki's Blog
 
-Koki 的个人网站 / 博客，支持中英双语与暗色模式。
+koki 的个人网站：信息安全学生的技术博客，支持中英双语与暗色模式。
+
+- **域名**：koki.asia（审核中，暂用 Vercel 分配地址）
+- **作者**：koki（KevinDavisbob）· 汕头职业技术学院 · 信息安全应用技术 · 大二
+- **联系**：3210254261@qq.com
+
+## 站点板块
+
+| 板块 | 路由 | 内容 |
+| --- | --- | --- |
+| 首页 | `/` | Hero + 最近文章 |
+| 博客 | `/blog` | MDX 文章、标签筛选、按年归档（`/archive`） |
+| 项目 | `/projects` | 项目作品展示 |
+| 安全 | `/security` | 安全学习路线、实战平台、密码学小工具 |
+| CTF 挑战 | `/challenge` | 3 关迷你 CTF（源码/控制台/响应头） |
+| 汽车 | `/cars` | 汽车知识百科 + 4 个互动模拟器 |
+| 路线 | `/roadmap` | 编程学习路线（含信息安全方向） |
+| 资料 | `/resources` | 精选学习资源 |
+| 书单 | `/books` | 在读/已读/想读 |
+| 关于 | `/about` | 个人介绍 |
 
 ## 技术栈
 
@@ -8,13 +27,14 @@ Koki 的个人网站 / 博客，支持中英双语与暗色模式。
 - **样式**：Tailwind CSS 4（暗色模式）
 - **国际化**：next-intl —— 中文为默认语言（`/`），英文带前缀（`/en`）
 - **内容**：MDX（next-mdx-remote + remark-gfm + rehype-pretty-code 代码高亮）
+- **部署**：Vercel（全页面静态预渲染）
 
 ## 本地开发
 
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm run build    # 生产构建（全部页面预渲染为静态 HTML）
+npm run build    # 生产构建
 npm start        # 运行生产构建
 ```
 
@@ -43,15 +63,18 @@ draft: true  # 可选，草稿不发布
 | 界面文案（导航、按钮等） | `messages/zh.json`、`messages/en.json` |
 | 关于页内容 | `content/zh/about.mdx`、`content/en/about.mdx` |
 | 首页介绍 | `messages/*.json` 里的 `Home.intro` |
-| 主题色 / 样式 | `src/app/globals.css` + 各组件中的 indigo 色值 |
-| 新增语言 | `src/i18n/routing.ts` + `messages/` 新目录 |
+| 项目列表 | `src/lib/projects.ts` |
+| 安全内容 | `src/lib/security.ts` |
+| 汽车知识/术语 | `src/lib/cars.ts` |
+| 模拟器 | `src/components/car-sims.tsx` |
+| 学习路线 | `src/lib/roadmaps.ts` |
+| 学习资源 | `src/lib/resources.ts` |
+| 书单 | `src/lib/books.ts` |
+| CTF 挑战关卡 | `src/components/challenge-game.tsx` + `src/proxy.ts` |
+| 主题色 / 样式 | `src/app/globals.css` |
 
 ## 部署
 
-项目是纯静态预渲染 + 少量动态页面，推荐 [Vercel](https://vercel.com)：
-
-1. 将代码推到 GitHub 仓库
-2. Vercel 导入仓库即可自动部署（无需任何配置）
-3. 在 Vercel 控制台把 `koki.cn` 域名绑定到项目，并按提示到域名服务商处添加解析
-
-部署后记得把 `src/lib/site.ts` 里的占位链接（GitHub、邮箱）换成你自己的。
+- 生产：`vercel deploy --prod`
+- 国内访问注意：`*.vercel.app` 地址在国内不稳定，绑定自定义域名（koki.asia）后走不同线路基本稳定
+- `sitemap` / `canonical` 已指向 `https://koki.asia`（在 `src/lib/site.ts`），域名上线后自动正确
