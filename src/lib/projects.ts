@@ -19,7 +19,7 @@ const zh: Project[] = [
     title: "Koki 个人博客",
     description:
       "就是你现在看到的这个网站：Next.js 16 + Tailwind CSS 4 构建，支持中英双语、暗色模式、MDX 博客。从零开始写的第一个完整 Web 项目。",
-    url: "https://koki.cn",
+    url: "https://koki.asia",
     repo: "https://github.com/KevinDavisbob/koki-site",
     tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS"],
     year: "2026",
@@ -51,7 +51,7 @@ const en: Project[] = [
     title: "Koki Blog",
     description:
       "This very website — built with Next.js 16 and Tailwind CSS 4, with i18n (Chinese/English), dark mode and an MDX-powered blog. My first complete web project from scratch.",
-    url: "https://koki.cn",
+    url: "https://koki.asia",
     repo: "https://github.com/KevinDavisbob/koki-site",
     tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS"],
     year: "2026",
