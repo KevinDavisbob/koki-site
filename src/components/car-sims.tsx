@@ -14,7 +14,10 @@ type SimKey =
   | "turbo"
   | "aero"
   | "brake"
-  | "dyno";
+  | "dyno"
+  | "steering"
+  | "awd"
+  | "crash";
 
 const simMeta: { key: SimKey; icon: string }[] = [
   { key: "engine", icon: "🔥" },
@@ -22,8 +25,11 @@ const simMeta: { key: SimKey; icon: string }[] = [
   { key: "dyno", icon: "📈" },
   { key: "gear", icon: "⚙️" },
   { key: "suspension", icon: "🪝" },
+  { key: "steering", icon: "🔄" },
+  { key: "awd", icon: "🛞" },
   { key: "aero", icon: "🌬️" },
   { key: "brake", icon: "🛑" },
+  { key: "crash", icon: "💥" },
   { key: "accel", icon: "🏁" },
   { key: "battery", icon: "🔋" },
   { key: "fuel", icon: "⛽" },
@@ -46,6 +52,9 @@ export function CarSims() {
     aero: t("aeroTitle"),
     brake: t("brakeTitle"),
     dyno: t("dynoTitle"),
+    steering: t("steeringTitle"),
+    awd: t("awdTitle"),
+    crash: t("crashTitle"),
   };
 
   return (
@@ -80,6 +89,9 @@ export function CarSims() {
         {active === "aero" && <AeroSim t={t} />}
         {active === "brake" && <BrakeSim t={t} />}
         {active === "dyno" && <DynoSim t={t} />}
+        {active === "steering" && <SteeringSim t={t} />}
+        {active === "awd" && <AwdSim t={t} />}
+        {active === "crash" && <CrashSim t={t} />}
       </div>
     </div>
   );
@@ -1359,6 +1371,423 @@ function DynoSim({ t }: { t: CarsT }) {
         </div>
       </div>
       <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("dynoNote")}</p>
+    </div>
+  );
+}
+
+/* ---------------- 转向模拟 ---------------- */
+
+const WHEELBASE_M = 2.7;
+
+function SteeringSim({ t }: { t: CarsT }) {
+  const [steeringDeg, setSteeringDeg] = useState(90); // 方向盘转角
+  const [speed, setSpeed] = useState(40); // km/h
+
+  // 转向比 15:1，前轮转角上限 ±35°
+  const wheelDeg = Math.max(-35, Math.min(35, steeringDeg / 15));
+  const rad = (wheelDeg * Math.PI) / 180;
+  const straight = Math.abs(wheelDeg) < 0.5;
+  const radiusM = straight ? Infinity : WHEELBASE_M / Math.tan(rad);
+  const v = speed / 3.6;
+  const lateralG = straight ? 0 : (v * v) / (radiusM * 9.81);
+
+  const arcR = Math.max(30, Math.min(130, Math.abs(radiusM) * 1.6));
+  const arcPath =
+    wheelDeg > 0
+      ? `M ${150 + arcR} 80 A ${arcR} ${arcR} 0 0 1 150 ${80 + arcR}`
+      : `M ${150 - arcR} 80 A ${arcR} ${arcR} 0 0 0 150 ${80 - arcR}`;
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {t("steeringHint")}
+      </p>
+      <svg viewBox="0 0 300 190" className="w-full max-w-xs" role="img">
+        {/* 转弯半径虚线弧 */}
+        {!straight && (
+          <path d={arcPath} fill="none" stroke="#6366f1" strokeWidth="1.5" strokeDasharray="5 5" opacity="0.7" />
+        )}
+        {/* 车身（俯视） */}
+        <rect x="55" y="48" width="190" height="74" rx="20" fill="#6366f1" opacity="0.9" />
+        <rect x="86" y="58" width="44" height="22" rx="4" fill="#e4e4e7" opacity="0.7" />
+        <rect x="170" y="58" width="44" height="22" rx="4" fill="#e4e4e7" opacity="0.7" />
+        {/* 前轮（可转向） */}
+        <g transform={`rotate(${-wheelDeg} 82 44)`}>
+          <rect x="72" y="38" width="20" height="12" rx="3" fill="#27272a" />
+        </g>
+        <g transform={`rotate(${-wheelDeg} 218 44)`}>
+          <rect x="208" y="38" width="20" height="12" rx="3" fill="#27272a" />
+        </g>
+        {/* 后轮（固定） */}
+        <rect x="72" y="122" width="20" height="12" rx="3" fill="#27272a" />
+        <rect x="208" y="122" width="20" height="12" rx="3" fill="#27272a" />
+        {/* 方向盘 */}
+        <g transform={`rotate(${steeringDeg * 0.6} 262 150)`}>
+          <circle cx="262" cy="150" r="22" fill="none" stroke="#71717a" strokeWidth="5" />
+          <line x1="262" y1="132" x2="262" y2="168" stroke="#71717a" strokeWidth="3" />
+        </g>
+        <text x="262" y="184" textAnchor="middle" fontSize="9" fill="currentColor" className="text-zinc-400">
+          {t("steeringWheel")}
+        </text>
+      </svg>
+
+      <label className="flex w-full max-w-xs items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("steeringWheel")}
+        <input
+          type="range"
+          min={-200}
+          max={200}
+          value={steeringDeg}
+          onChange={(e) => setSteeringDeg(Number(e.target.value))}
+          className="flex-1 accent-indigo-600"
+        />
+        <span className="w-16 text-right tabular-nums">{steeringDeg}°</span>
+      </label>
+      <label className="flex w-full max-w-xs items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("steeringSpeed")}
+        <input
+          type="range"
+          min={10}
+          max={120}
+          step={5}
+          value={speed}
+          onChange={(e) => setSpeed(Number(e.target.value))}
+          className="flex-1 accent-indigo-600"
+        />
+        <span className="w-20 text-right tabular-nums">{speed} km/h</span>
+      </label>
+
+      <div className="grid w-full max-w-xs grid-cols-3 gap-2 text-sm">
+        <div className="rounded-lg bg-zinc-100 px-2 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("wheelAngle")}</p>
+          <p className="font-bold tabular-nums">{wheelDeg.toFixed(1)}°</p>
+        </div>
+        <div className="rounded-lg bg-zinc-100 px-2 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("turnRadius")}</p>
+          <p className="font-bold tabular-nums">
+            {straight ? "∞" : `${Math.abs(radiusM).toFixed(1)} m`}
+          </p>
+        </div>
+        <div className="rounded-lg bg-zinc-100 px-2 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("lateralG")}</p>
+          <p
+            className={`font-bold tabular-nums ${
+              lateralG > 0.8 ? "text-rose-600" : lateralG > 0.4 ? "text-amber-600" : ""
+            }`}
+          >
+            {lateralG.toFixed(2)} g
+          </p>
+        </div>
+      </div>
+      <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("steeringNote")}</p>
+    </div>
+  );
+}
+
+/* ---------------- 四驱扭矩分配模拟 ---------------- */
+
+const AWD_MU = { dry: 0.9, wet: 0.55, snow: 0.2 } as const;
+type AwdMode = "fwd" | "rwd" | "awd" | "onDemand";
+
+function AwdSim({ t }: { t: CarsT }) {
+  const [mode, setMode] = useState<AwdMode>("fwd");
+  const [road, setRoad] = useState<keyof typeof AWD_MU>("dry");
+  const [throttle, setThrottle] = useState(100);
+
+  const mu = AWD_MU[road];
+
+  // 重心后移：油门越大，前轮负载越少
+  const frontLoad = 0.55 - 0.18 * (throttle / 100);
+  const rearLoad = 1 - frontLoad;
+
+  // 扭矩分配
+  let frontShare: number;
+  let rearShare: number;
+  if (mode === "fwd") [frontShare, rearShare] = [1, 0];
+  else if (mode === "rwd") [frontShare, rearShare] = [0, 1];
+  else if (mode === "awd") [frontShare, rearShare] = [0.5, 0.5];
+  else {
+    // 适时四驱：默认前驱；前轮抓不住时转移 55% 到后轴
+    const frontGrip = mu * frontLoad * 100;
+    const slipFront = throttle * 1 > frontGrip;
+    [frontShare, rearShare] = slipFront ? [0.45, 0.55] : [1, 0];
+  }
+
+  // 打滑判定：该轴所需扭矩 > 抓地极限
+  const gripLimit = (load: number) => mu * load * 100;
+  const slipFront = throttle * frontShare > gripLimit(frontLoad);
+  const slipRear = throttle * rearShare > gripLimit(rearLoad);
+
+  const wheel = (share: number, slip: boolean, y: number, x: number) => (
+    <g key={`${x}-${y}`}>
+      <rect x={x - 9} y={y - 6} width="18" height="12" rx="3" fill="#27272a" />
+      {slip && <circle cx={x} cy={y} r="14" fill="#ef4444" opacity="0.35" />}
+      {/* 扭矩条 */}
+      <rect x={x - 4} y={y + 12} width="8" height="22" rx="2" fill="#e4e4e7" />
+      <rect
+        x={x - 4}
+        y={y + 12 + 22 - share * 22}
+        width="8"
+        height={share * 22}
+        rx="2"
+        fill={slip ? "#ef4444" : "#6366f1"}
+      />
+    </g>
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("awdHint")}</p>
+
+      <svg viewBox="0 0 300 160" className="w-full max-w-xs self-center" role="img">
+        {/* 车身（俯视） */}
+        <rect x="70" y="52" width="160" height="70" rx="18" fill="#6366f1" opacity="0.85" />
+        <line x1="150" y1="52" x2="150" y2="122" stroke="#fff" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.5" />
+        {/* 四轮 + 扭矩条 */}
+        {wheel(frontShare / 2, slipFront, 44, 95)}
+        {wheel(frontShare / 2, slipFront, 44, 205)}
+        {wheel(rearShare / 2, slipRear, 132, 95)}
+        {wheel(rearShare / 2, slipRear, 132, 205)}
+        <text x="60" y="48" fontSize="9" fill="currentColor" className="text-zinc-400">前轴</text>
+        <text x="60" y="140" fontSize="9" fill="currentColor" className="text-zinc-400">后轴</text>
+      </svg>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {(
+          [
+            { key: "fwd", label: t("awdFwd") },
+            { key: "rwd", label: t("awdRwd") },
+            { key: "awd", label: t("awdFull") },
+            { key: "onDemand", label: t("awdOnDemand") },
+          ] as { key: AwdMode; label: string }[]
+        ).map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setMode(key)}
+            className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
+              mode === key
+                ? "bg-indigo-600 text-white"
+                : "border border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {(
+          [
+            { key: "dry", label: `${t("brakeDry")} μ0.9` },
+            { key: "wet", label: `${t("brakeWet")} μ0.55` },
+            { key: "snow", label: `${t("brakeSnow")} μ0.2` },
+          ] as { key: keyof typeof AWD_MU; label: string }[]
+        ).map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setRoad(key)}
+            className={`rounded-full px-3 py-1.5 text-xs transition-colors ${
+              road === key
+                ? "bg-zinc-600 text-white"
+                : "border border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("awdThrottle")}
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={throttle}
+          onChange={(e) => setThrottle(Number(e.target.value))}
+          className="flex-1 accent-indigo-600"
+        />
+        <span className="w-14 text-right tabular-nums">{throttle}%</span>
+      </label>
+
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("awdTorque")}：前/后</p>
+          <p className="font-bold tabular-nums">
+            {Math.round(frontShare * 100)}% / {Math.round(rearShare * 100)}%
+          </p>
+        </div>
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">抓地极限：前/后</p>
+          <p className="font-bold tabular-nums">
+            {Math.round(gripLimit(frontLoad))} / {Math.round(gripLimit(rearLoad))}
+          </p>
+        </div>
+      </div>
+
+      {(slipFront || slipRear) && (
+        <p className="text-center text-sm font-bold text-rose-600 dark:text-rose-400">
+          ⚠️ {t("awdSlip")}（{slipFront ? "前轮" : ""}{slipFront && slipRear ? " + " : ""}{slipRear ? "后轮" : ""}）
+        </p>
+      )}
+
+      <p className="text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("awdNote")}</p>
+    </div>
+  );
+}
+
+/* ---------------- 碰撞测试模拟 ---------------- */
+
+const CAR_MASS_KG = 1500;
+const CRUSH_DISTANCE_M = 0.6;
+
+function CrashSim({ t }: { t: CarsT }) {
+  const [speed, setSpeed] = useState(60); // km/h
+  const [phase, setPhase] = useState<"ready" | "crashing" | "done">("ready");
+  const [x, setX] = useState(0); // 车辆平移
+  const [squash, setSquash] = useState(1);
+  const rafRef = useRef<number | null>(null);
+
+  const v = speed / 3.6;
+  const energyJ = 0.5 * CAR_MASS_KG * v * v;
+  const energyKJ = energyJ / 1000;
+  const tntG = energyJ / 4184;
+  const decel = (v * v) / (2 * CRUSH_DISTANCE_M);
+  const gForce = decel / 9.81;
+  const surviveLevel = gForce < 15 ? 1 : gForce < 35 ? 2 : 3;
+
+  function crash() {
+    if (phase !== "ready") return;
+    setPhase("crashing");
+    const start = performance.now();
+    const tick = (now: number) => {
+      const tMs = now - start;
+      if (tMs < 700) {
+        const p = tMs / 700;
+        setX(p * 168); // 从起点滑向墙壁
+        rafRef.current = requestAnimationFrame(tick);
+      } else if (tMs < 950) {
+        const p = (tMs - 700) / 250;
+        setSquash(1 - p * 0.48); // 车头压溃
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setPhase("done");
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }
+
+  function reset() {
+    setPhase("ready");
+    setX(0);
+    setSquash(1);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const surviveText =
+    surviveLevel === 1 ? t("crashSurvive1") : surviveLevel === 2 ? t("crashSurvive2") : t("crashSurvive3");
+  const surviveColor =
+    surviveLevel === 1
+      ? "text-emerald-600 dark:text-emerald-400"
+      : surviveLevel === 2
+        ? "text-amber-600 dark:text-amber-400"
+        : "text-rose-600 dark:text-rose-400";
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {t("crashHint")}
+      </p>
+      <svg viewBox="0 0 300 140" className="w-full max-w-xs" role="img">
+        {/* 地面 */}
+        <line x1="8" y1="112" x2="292" y2="112" stroke="currentColor" strokeWidth="2" className="text-zinc-400 dark:text-zinc-600" />
+        {/* 墙 */}
+        <rect x="268" y="22" width="10" height="90" rx="2" fill="#71717a" />
+        <text x="273" y="14" textAnchor="middle" fontSize="9" fill="#71717a">墙</text>
+        {/* 车辆（侧视）：车头向右，压溃时以车头为轴压缩 */}
+        <g
+          style={{
+            transform: `translate(${x}px, 0px) scale(${squash}, 1)`,
+            transformBox: "fill-box",
+            transformOrigin: "right center",
+          }}
+        >
+          <path d="M 28 94 L 52 94 Q 58 90 62 80 L 100 80 Q 116 80 124 70 Q 138 56 162 56 Q 190 56 200 66 Q 208 74 208 84 L 208 94 Z" fill="#6366f1" />
+          <circle cx="72" cy="98" r="12" fill="#27272a" />
+          <circle cx="172" cy="98" r="12" fill="#27272a" />
+          <rect x="96" y="62" width="34" height="14" rx="3" fill="#c7d2fe" opacity="0.9" />
+        </g>
+        {/* 速度线 */}
+        {phase === "crashing" && x < 160 && (
+          <>
+            <line x1={x + 10} y1="40" x2={x + 34} y2="40" stroke="#60a5fa" strokeWidth="1.5" opacity="0.7" />
+            <line x1={x + 2} y1="66" x2={x + 30} y2="66" stroke="#60a5fa" strokeWidth="1.5" opacity="0.7" />
+          </>
+        )}
+      </svg>
+
+      <label className="flex w-full max-w-xs items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("crashSpeed")}
+        <input
+          type="range"
+          min={20}
+          max={120}
+          step={5}
+          value={speed}
+          onChange={(e) => {
+            setSpeed(Number(e.target.value));
+            reset();
+          }}
+          className="flex-1 accent-indigo-600"
+        />
+        <span className="w-20 text-right tabular-nums">{speed} km/h</span>
+      </label>
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={crash}
+          className="rounded-lg bg-rose-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-500"
+        >
+          💥 {t("crashImpact")}
+        </button>
+        <button
+          type="button"
+          onClick={reset}
+          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:border-zinc-400 dark:border-zinc-700"
+        >
+          {t("crashReset")}
+        </button>
+      </div>
+
+      {phase === "done" && (
+        <div className="grid w-full max-w-xs grid-cols-2 gap-3 text-sm">
+          <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+            <p className="text-xs text-zinc-500">{t("crashEnergy")}</p>
+            <p className="font-bold tabular-nums">{energyKJ.toFixed(0)} kJ</p>
+            <p className="text-xs text-zinc-400">
+              {t("crashTnt")} {tntG.toFixed(0)} g
+            </p>
+          </div>
+          <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+            <p className="text-xs text-zinc-500">{t("crashG")}</p>
+            <p className="font-bold tabular-nums">{gForce.toFixed(0)} g</p>
+          </div>
+          <div className="col-span-2 rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+            <p className="text-xs text-zinc-500">{t("crashSurvive")}</p>
+            <p className={`font-semibold ${surviveColor}`}>{surviveText}</p>
+          </div>
+        </div>
+      )}
+
+      <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("crashNote")}</p>
     </div>
   );
 }
