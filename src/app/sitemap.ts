@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
-  const staticPaths = ["", "/blog", "/about"];
+  const staticPaths = ["", "/blog", "/resources", "/about"];
 
   for (const locale of routing.locales) {
     const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;

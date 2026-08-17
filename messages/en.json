@@ -6,6 +6,7 @@
   "Nav": {
     "home": "Home",
     "blog": "Blog",
+    "resources": "Resources",
     "about": "About"
   },
   "Home": {
@@ -28,6 +29,22 @@
   },
   "About": {
     "title": "About"
+  },
+  "Resources": {
+    "title": "Learning Resources",
+    "description": "Curated resources for learning to code from scratch: tutorials, videos, books and practice platforms — mostly free and beginner-friendly.",
+    "types": {
+      "website": "Website",
+      "video": "Video",
+      "book": "Book",
+      "course": "Course",
+      "practice": "Practice"
+    },
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "reference": "Reference"
+    }
   },
   "NotFound": {
     "title": "Page not found",

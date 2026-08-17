@@ -7,7 +7,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { siteConfig } from "@/lib/site";
 
 type NavItem = {
-  href: "/" | "/blog" | "/about";
+  href: "/" | "/blog" | "/resources" | "/about";
   label: string;
   exact: boolean;
 };
@@ -19,6 +19,7 @@ export function Header() {
   const nav: NavItem[] = [
     { href: "/", label: t("home"), exact: true },
     { href: "/blog", label: t("blog"), exact: false },
+    { href: "/resources", label: t("resources"), exact: false },
     { href: "/about", label: t("about"), exact: false },
   ];
 

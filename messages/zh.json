@@ -6,6 +6,7 @@
   "Nav": {
     "home": "首页",
     "blog": "博客",
+    "resources": "资料",
     "about": "关于"
   },
   "Home": {
@@ -28,6 +29,22 @@
   },
   "About": {
     "title": "关于我"
+  },
+  "Resources": {
+    "title": "学习资料",
+    "description": "从零开始学编程的精选资源：教程、视频、书籍与刷题平台，全部免费为主，小白好上手。",
+    "types": {
+      "website": "网站",
+      "video": "视频",
+      "book": "书籍",
+      "course": "课程",
+      "practice": "练习"
+    },
+    "levels": {
+      "beginner": "入门",
+      "intermediate": "进阶",
+      "reference": "参考"
+    }
   },
   "NotFound": {
     "title": "页面不存在",
