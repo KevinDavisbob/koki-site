@@ -3,15 +3,30 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
-type SimKey = "engine" | "gear" | "accel" | "fuel" | "suspension" | "battery" | "vvt";
+type SimKey =
+  | "engine"
+  | "gear"
+  | "accel"
+  | "fuel"
+  | "suspension"
+  | "battery"
+  | "vvt"
+  | "turbo"
+  | "aero"
+  | "brake"
+  | "dyno";
 
 const simMeta: { key: SimKey; icon: string }[] = [
   { key: "engine", icon: "🔥" },
+  { key: "turbo", icon: "🌀" },
+  { key: "dyno", icon: "📈" },
   { key: "gear", icon: "⚙️" },
-  { key: "accel", icon: "🏁" },
-  { key: "fuel", icon: "⛽" },
   { key: "suspension", icon: "🪝" },
+  { key: "aero", icon: "🌬️" },
+  { key: "brake", icon: "🛑" },
+  { key: "accel", icon: "🏁" },
   { key: "battery", icon: "🔋" },
+  { key: "fuel", icon: "⛽" },
   { key: "vvt", icon: "⏱️" },
 ];
 
@@ -27,6 +42,10 @@ export function CarSims() {
     suspension: t("suspensionTitle"),
     battery: t("batteryTitle"),
     vvt: t("vvtTitle"),
+    turbo: t("turboTitle"),
+    aero: t("aeroTitle"),
+    brake: t("brakeTitle"),
+    dyno: t("dynoTitle"),
   };
 
   return (
@@ -57,6 +76,10 @@ export function CarSims() {
         {active === "suspension" && <SuspensionSim t={t} />}
         {active === "battery" && <BatterySim t={t} />}
         {active === "vvt" && <VvtSim t={t} />}
+        {active === "turbo" && <TurboSim t={t} />}
+        {active === "aero" && <AeroSim t={t} />}
+        {active === "brake" && <BrakeSim t={t} />}
+        {active === "dyno" && <DynoSim t={t} />}
       </div>
     </div>
   );
@@ -814,6 +837,528 @@ function VvtSim({ t }: { t: CarsT }) {
         <br />
         {t("vvtExplain")}
       </p>
+    </div>
+  );
+}
+
+/* ---------------- 涡轮增压模拟 ---------------- */
+
+function TurboSim({ t }: { t: CarsT }) {
+  const [throttle, setThrottle] = useState(30);
+  const [rpm, setRpm] = useState(2000);
+  const [boost, setBoost] = useState(0);
+  const [turbineAngle, setTurbineAngle] = useState(0);
+  const [blowoff, setBlowoff] = useState(false);
+  const boostRef = useRef(0);
+  const prevTargetRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+
+  // 增压物理：目标增压 = 油门 × 转速因子；爬升慢（迟滞 τ=0.7s）、泄压快（τ=0.15s）
+  useEffect(() => {
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      const rpmFactor = Math.min(1, rpm / 4000);
+      const target = (throttle / 100) * rpmFactor * 1.6;
+      const tau = target > boostRef.current ? 0.7 : 0.15;
+      boostRef.current += ((target - boostRef.current) * dt) / tau;
+      if (boostRef.current < 0.01) boostRef.current = 0;
+      // 泄压阀：油门大幅回撤且增压较高时触发
+      if (prevTargetRef.current - target > 0.5 && boostRef.current > 0.5) {
+        setBlowoff(true);
+        setTimeout(() => setBlowoff(false), 700);
+      }
+      prevTargetRef.current = target;
+      setBoost(boostRef.current);
+      setTurbineAngle((a) => (a + boostRef.current * dt * 2000) % 360);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [throttle, rpm]);
+
+  const turbineRpm = Math.round(boost * 80000); // 万转 = boost × 8 万
+  const power = Math.round((rpm / 6500) * 120 * (1 + boost * 0.9));
+
+  const sliderCls = "flex-1 accent-indigo-600";
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {t("turboHint")}
+      </p>
+      <svg viewBox="0 0 300 200" className="w-full max-w-xs" role="img">
+        {/* 进气（左）：空气 → 压气机 → 中冷器 → 发动机 */}
+        <rect x="8" y="86" width="30" height="18" rx="3" fill="#e4e4e7" stroke="#a1a1aa" />
+        <line x1="38" y1="95" x2="64" y2="95" stroke="#a1a1aa" strokeWidth="4" />
+        {/* 压气机（冷端涡轮） */}
+        <circle cx="74" cy="95" r="13" fill="#d4d4d8" stroke="#71717a" strokeWidth="2" />
+        <g transform={`rotate(${turbineAngle} 74 95)`}>
+          <line x1="74" y1="84" x2="74" y2="106" stroke="#3b82f6" strokeWidth="2" />
+          <line x1="63" y1="95" x2="85" y2="95" stroke="#3b82f6" strokeWidth="2" />
+        </g>
+        <line x1="87" y1="95" x2="108" y2="95" stroke="#3b82f6" strokeWidth="4" />
+        {/* 中冷器 */}
+        <rect x="108" y="84" width="14" height="22" rx="2" fill="#bfdbfe" stroke="#3b82f6" />
+        <line x1="112" y1="84" x2="112" y2="106" stroke="#3b82f6" strokeWidth="1" />
+        <line x1="118" y1="84" x2="118" y2="106" stroke="#3b82f6" strokeWidth="1" />
+        <line x1="122" y1="95" x2="146" y2="95" stroke="#3b82f6" strokeWidth="4" />
+
+        {/* 发动机 */}
+        <rect x="146" y="72" width="52" height="46" rx="6" fill="#fafafa" stroke="#71717a" strokeWidth="2" />
+        <text x="172" y="98" textAnchor="middle" fontSize="10" fill="#71717a">发动机</text>
+
+        {/* 排气（右）：发动机 → 涡轮 → 排出 */}
+        <line x1="198" y1="95" x2="224" y2="95" stroke="#ef4444" strokeWidth="4" />
+        <circle cx="234" cy="95" r="13" fill="#fecaca" stroke="#ef4444" strokeWidth="2" />
+        <g transform={`rotate(${turbineAngle} 234 95)`}>
+          <line x1="234" y1="84" x2="234" y2="106" stroke="#ef4444" strokeWidth="2" />
+          <line x1="223" y1="95" x2="245" y2="95" stroke="#ef4444" strokeWidth="2" />
+        </g>
+        <line x1="247" y1="95" x2="292" y2="95" stroke="#ef4444" strokeWidth="4" />
+        <path d="M 292 90 Q 296 95 292 100" fill="none" stroke="#ef4444" strokeWidth="2" />
+
+        {/* 泄压阀指示 */}
+        {blowoff && (
+          <text x="150" y="30" textAnchor="middle" fontSize="13" fontWeight="700" fill="#8b5cf6">
+            {t("turboBlowoff")}
+          </text>
+        )}
+
+        {/* 增压值表：左侧竖条 */}
+        <rect x="22" y="30" width="14" height="120" rx="3" fill="none" stroke="#a1a1aa" strokeWidth="1.5" />
+        <rect
+          x="24"
+          y={150 - boost * 60}
+          width="10"
+          height={boost * 60}
+          rx="2"
+          fill={boost > 1.3 ? "#ef4444" : boost > 0.6 ? "#f59e0b" : "#16a34a"}
+        />
+        <text x="29" y="166" textAnchor="middle" fontSize="9" fill="#a1a1aa">0</text>
+        <text x="29" y="36" textAnchor="middle" fontSize="9" fill="#a1a1aa">2.0</text>
+        <text x="29" y="20" textAnchor="middle" fontSize="10" fontWeight="700" fill="currentColor">
+          {boost.toFixed(2)} bar
+        </text>
+      </svg>
+
+      <label className="flex w-full max-w-xs items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("turboThrottle")}
+        <input type="range" min={0} max={100} value={throttle} onChange={(e) => setThrottle(Number(e.target.value))} className={sliderCls} />
+        <span className="w-14 text-right tabular-nums">{throttle}%</span>
+      </label>
+      <label className="flex w-full max-w-xs items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("turboRpm")}
+        <input type="range" min={800} max={6500} step={100} value={rpm} onChange={(e) => setRpm(Number(e.target.value))} className={sliderCls} />
+        <span className="w-20 text-right tabular-nums">{rpm} rpm</span>
+      </label>
+
+      <div className="grid w-full max-w-xs grid-cols-2 gap-3 text-sm">
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("turboTurbine")}</p>
+          <p className="font-bold tabular-nums">{turbineRpm.toLocaleString()} rpm</p>
+        </div>
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("turboPower")}</p>
+          <p className="font-bold tabular-nums">{power} hp</p>
+        </div>
+      </div>
+      <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("turboLag")}</p>
+    </div>
+  );
+}
+
+/* ---------------- 空气动力学模拟 ---------------- */
+
+const AERO_PRESETS = {
+  sedan: { cd: 0.25, area: 2.2 },
+  suv: { cd: 0.35, area: 2.8 },
+  truck: { cd: 0.6, area: 7.0 },
+} as const;
+
+const CAR_PROFILES = {
+  sedan: "M 30 130 L 60 130 Q 66 126 72 118 L 120 118 Q 150 118 175 104 Q 200 92 232 90 Q 256 89 268 96 Q 276 102 276 112 L 276 130 Z",
+  suv: "M 30 130 L 56 130 Q 62 126 66 118 L 96 118 L 110 96 L 220 96 Q 258 96 268 102 Q 276 108 276 118 L 276 130 Z",
+  truck: "M 20 130 L 44 130 L 48 96 L 214 96 L 224 104 L 258 104 Q 276 104 276 116 L 276 130 Z",
+} as const;
+
+function AeroSim({ t }: { t: CarsT }) {
+  const [speed, setSpeed] = useState(120); // km/h
+  const [preset, setPreset] = useState<keyof typeof AERO_PRESETS>("sedan");
+  const [offset, setOffset] = useState(0);
+  const rafRef = useRef<number | null>(null);
+
+  // 气流线动画
+  useEffect(() => {
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      setOffset((o) => (o - speed * dt * 1.2 + 14) % 14);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [speed]);
+
+  const { cd, area } = AERO_PRESETS[preset];
+  const v = speed / 3.6; // m/s
+  const dragN = 0.5 * 1.225 * cd * area * v * v;
+  const powerKw = (dragN * v) / 1000;
+  const powerHp = powerKw / 0.735;
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {t("aeroHint")}
+      </p>
+      <svg viewBox="0 0 300 150" className="w-full max-w-xs" role="img">
+        {/* 气流线（4 条虚线，速度越快流动越快） */}
+        {[38, 55, 72, 108].map((y) => (
+          <line
+            key={y}
+            x1="6"
+            y1={y}
+            x2="294"
+            y2={y}
+            stroke="#60a5fa"
+            strokeWidth="1.5"
+            strokeDasharray="7 7"
+            strokeDashoffset={-offset}
+            opacity={0.6}
+          />
+        ))}
+        {/* 车身轮廓 */}
+        <path d={CAR_PROFILES[preset]} fill="#6366f1" opacity="0.85" />
+        {/* 车轮 */}
+        <circle cx="96" cy="132" r="12" fill="#27272a" />
+        <circle cx="226" cy="132" r="12" fill="#27272a" />
+      </svg>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {(
+          [
+            { key: "sedan", label: t("aeroSedan") },
+            { key: "suv", label: t("aeroSuv") },
+            { key: "truck", label: t("aeroTruck") },
+          ] as { key: keyof typeof AERO_PRESETS; label: string }[]
+        ).map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setPreset(key)}
+            className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+              preset === key
+                ? "bg-indigo-600 text-white"
+                : "border border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
+            }`}
+          >
+            {label}（Cd {AERO_PRESETS[key].cd}）
+          </button>
+        ))}
+      </div>
+
+      <label className="flex w-full max-w-xs items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("aeroSpeed")}
+        <input
+          type="range"
+          min={0}
+          max={300}
+          step={10}
+          value={speed}
+          onChange={(e) => setSpeed(Number(e.target.value))}
+          className="flex-1 accent-indigo-600"
+        />
+        <span className="w-20 text-right tabular-nums">{speed} km/h</span>
+      </label>
+
+      <div className="grid w-full max-w-xs grid-cols-2 gap-3 text-sm">
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("aeroDrag")}</p>
+          <p className="font-bold tabular-nums">{dragN.toFixed(0)} N</p>
+        </div>
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("aeroPower")}</p>
+          <p className="font-bold tabular-nums">
+            {powerKw.toFixed(1)} kW ≈ {powerHp.toFixed(0)} hp
+          </p>
+        </div>
+      </div>
+      <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("aeroNote")}</p>
+    </div>
+  );
+}
+
+/* ---------------- 刹车距离模拟 ---------------- */
+
+const ROAD_MU = { dry: 0.9, wet: 0.55, snow: 0.2 } as const;
+const ROAD_COLORS = { dry: "#71717a", wet: "#0ea5e9", snow: "#e2e8f0" } as const;
+const REACTION_TIME = 0.7;
+
+function BrakeSim({ t }: { t: CarsT }) {
+  const [v0, setV0] = useState(100); // km/h 初速度
+  const [road, setRoad] = useState<keyof typeof ROAD_MU>("dry");
+  const [speed, setSpeed] = useState(100); // 当前速度 km/h
+  const [braking, setBraking] = useState(false);
+  const [wheelAngle, setWheelAngle] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const speedRef = useRef(100);
+
+  const mu = ROAD_MU[road];
+  const decel = mu * 9.81; // m/s²
+  const reactionM = (v0 / 3.6) * REACTION_TIME;
+  const brakingM = (v0 / 3.6) ** 2 / (2 * decel);
+  const totalM = reactionM + brakingM;
+
+  function brake() {
+    if (braking || speedRef.current <= 0) return;
+    setBraking(true);
+    setSpeed(v0);
+    speedRef.current = v0;
+  }
+
+  function reset() {
+    setBraking(false);
+    setSpeed(v0);
+    speedRef.current = v0;
+  }
+
+  useEffect(() => {
+    if (!braking) return;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      speedRef.current = Math.max(0, speedRef.current - decel * 3.6 * dt);
+      setSpeed(speedRef.current);
+      setWheelAngle((a) => (a + (speedRef.current / 3.6) * dt * 60) % 360);
+      if (speedRef.current <= 0) setBraking(false);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [braking, decel]);
+
+  // 距离可视化比例
+  const scale = Math.max(1, totalM);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("brakeHint")}</p>
+
+      <svg viewBox="0 0 300 130" className="w-full max-w-xs self-center" role="img">
+        {/* 路面（按路况着色） */}
+        <rect x="6" y="104" width="288" height="20" rx="4" fill={ROAD_COLORS[road]} opacity="0.5" />
+        {/* 车轮 + 刹车盘 + 卡钳 */}
+        <g transform={`rotate(${wheelAngle} 150 92)`}>
+          <circle cx="150" cy="92" r="30" fill="none" stroke="#27272a" strokeWidth="7" />
+          <line x1="150" y1="64" x2="150" y2="120" stroke="#71717a" strokeWidth="2" />
+          <line x1="122" y1="92" x2="178" y2="92" stroke="#71717a" strokeWidth="2" />
+        </g>
+        {/* 刹车盘 */}
+        <circle cx="150" cy="92" r="16" fill={braking && speed > 20 ? "#f87171" : "#a1a1aa"} opacity={braking ? 0.9 : 0.6} />
+        {/* 卡钳：刹车时夹紧 */}
+        <g transform={`translate(0 ${braking ? 3 : 0})`}>
+          <rect x="136" y="70" width="28" height="8" rx="3" fill="#ef4444" />
+          <rect x="136" y="106" width="28" height="8" rx="3" fill="#ef4444" />
+        </g>
+        {/* 车速读数 */}
+        <text x="240" y="50" textAnchor="middle" fontSize="26" fontWeight="700" fill="currentColor">
+          {Math.round(speed)}
+        </text>
+        <text x="240" y="66" textAnchor="middle" fontSize="10" fill="currentColor" className="text-zinc-400">
+          km/h
+        </text>
+      </svg>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {(
+          [
+            { key: "dry", label: t("brakeDry") },
+            { key: "wet", label: t("brakeWet") },
+            { key: "snow", label: t("brakeSnow") },
+          ] as { key: keyof typeof ROAD_MU; label: string }[]
+        ).map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => {
+              setRoad(key);
+              reset();
+            }}
+            className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+              road === key
+                ? "bg-indigo-600 text-white"
+                : "border border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("brakeSpeed")}
+        <input
+          type="range"
+          min={30}
+          max={200}
+          step={5}
+          value={v0}
+          onChange={(e) => {
+            setV0(Number(e.target.value));
+            reset();
+          }}
+          className="flex-1 accent-indigo-600"
+        />
+        <span className="w-20 text-right tabular-nums">{v0} km/h</span>
+      </label>
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={brake}
+          className="flex-1 rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-500"
+        >
+          🛑 {t("brakeStart")}
+        </button>
+        <button
+          type="button"
+          onClick={reset}
+          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:border-zinc-400 dark:border-zinc-700"
+        >
+          {t("brakeReset")}
+        </button>
+      </div>
+
+      {/* 距离可视化：反应距离 + 制动距离 */}
+      <div>
+        <div className="flex h-4 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-900">
+          <div className="h-full bg-amber-400" style={{ width: `${(reactionM / scale) * 100}%` }} />
+          <div className="h-full bg-rose-500" style={{ width: `${(brakingM / scale) * 100}%` }} />
+        </div>
+        <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
+          <span>🟡 {t("brakeReaction")}：{reactionM.toFixed(1)} m</span>
+          <span>🔴 {t("brakeBraking")}：{brakingM.toFixed(1)} m</span>
+          <span className="font-semibold">📏 {t("brakeTotal")}：{totalM.toFixed(1)} m</span>
+        </div>
+      </div>
+
+      <p className="text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+        {t("brakeDecel")}：{(decel / 9.81).toFixed(2)} g（μ = {mu}）
+      </p>
+      <p className="text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("brakeNote")}</p>
+    </div>
+  );
+}
+
+/* ---------------- 功率扭矩曲线（马力机） ---------------- */
+
+function DynoSim({ t }: { t: CarsT }) {
+  const [mode, setMode] = useState<"na" | "turbo">("na");
+
+  // 扭矩曲线（N·m）：NA 山峰形，涡轮高原形
+  function torqueAt(rpm: number, m: "na" | "turbo") {
+    if (m === "na") return 200 * Math.exp(-(((rpm - 4500) / 2600) ** 2));
+    if (rpm < 1500) return 250 * (rpm / 1500);
+    if (rpm <= 4500) return 250;
+    return 250 - ((rpm - 4500) / 2500) * 50;
+  }
+
+  // 功率 kW = 扭矩 × 转速 / 9549
+  const powerAt = (rpm: number, m: "na" | "turbo") => (torqueAt(rpm, m) * rpm) / 9549;
+
+  const torqueMax = mode === "na" ? 200 : 250;
+  const maxT = torqueMax;
+  const maxP = (() => {
+    let best = 0;
+    for (let rpm = 1000; rpm <= 7000; rpm += 50) best = Math.max(best, powerAt(rpm, mode));
+    return best;
+  })();
+  const maxHp = maxP * 1.341;
+
+  // 生成曲线路径（归一化到各自最大值）
+  const CHART_X = (rpm: number) => 44 + ((rpm - 1000) / 6000) * 212;
+  const CHART_Y = (ratio: number) => 158 - ratio * 130;
+  const torquePath: string[] = [];
+  const powerPath: string[] = [];
+  for (let rpm = 1000; rpm <= 7000; rpm += 50) {
+    torquePath.push(`${CHART_X(rpm)},${CHART_Y(torqueAt(rpm, mode) / maxT)}`);
+    powerPath.push(`${CHART_X(rpm)},${CHART_Y(powerAt(rpm, mode) / maxP)}`);
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {t("dynoHint")}
+      </p>
+      <svg viewBox="0 0 300 190" className="w-full max-w-xs" role="img">
+        {/* 网格与轴 */}
+        {[0, 0.25, 0.5, 0.75, 1].map((r) => (
+          <line key={r} x1="44" y1={CHART_Y(r)} x2="256" y2={CHART_Y(r)} stroke="currentColor" strokeWidth="0.5" className="text-zinc-200 dark:text-zinc-800" />
+        ))}
+        <line x1="44" y1="158" x2="256" y2="158" stroke="currentColor" strokeWidth="1.5" className="text-zinc-400 dark:text-zinc-600" />
+        {[2000, 3500, 5000, 6500].map((rpm) => (
+          <text key={rpm} x={CHART_X(rpm)} y="176" textAnchor="middle" fontSize="9" fill="currentColor" className="text-zinc-400">
+            {rpm}
+          </text>
+        ))}
+        <text x="150" y="186" textAnchor="middle" fontSize="9" fill="currentColor" className="text-zinc-400">
+          rpm
+        </text>
+        {/* 曲线 */}
+        <polyline points={torquePath.join(" ")} fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+        <polyline points={powerPath.join(" ")} fill="none" stroke="#6366f1" strokeWidth="2.5" />
+        {/* 图例 */}
+        <line x1="60" y1="22" x2="80" y2="22" stroke="#f59e0b" strokeWidth="2.5" />
+        <text x="86" y="26" fontSize="10" fill="#f59e0b">扭矩</text>
+        <line x1="140" y1="22" x2="160" y2="22" stroke="#6366f1" strokeWidth="2.5" />
+        <text x="166" y="26" fontSize="10" fill="#6366f1">功率</text>
+      </svg>
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setMode("na")}
+          className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
+            mode === "na"
+              ? "bg-indigo-600 text-white"
+              : "border border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
+          }`}
+        >
+          {t("dynoNa")}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("turbo")}
+          className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
+            mode === "turbo"
+              ? "bg-indigo-600 text-white"
+              : "border border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
+          }`}
+        >
+          {t("dynoTurbo")}
+        </button>
+      </div>
+
+      <div className="grid w-full max-w-xs grid-cols-2 gap-3 text-sm">
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("dynoMaxPower")}</p>
+          <p className="font-bold tabular-nums">{maxHp.toFixed(0)} hp</p>
+        </div>
+        <div className="rounded-lg bg-zinc-100 px-3 py-2 text-center dark:bg-zinc-900">
+          <p className="text-xs text-zinc-500">{t("dynoMaxTorque")}</p>
+          <p className="font-bold tabular-nums">{torqueMax} N·m</p>
+        </div>
+      </div>
+      <p className="max-w-sm text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400">{t("dynoNote")}</p>
     </div>
   );
 }
