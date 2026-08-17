@@ -1,0 +1,47 @@
+---
+title: "CTF Is Not Hacking — It's Puzzle-Solving"
+date: "2026-08-16"
+description: "The best way into information security: what CTF is, its categories, and how to start from absolute zero."
+tags: ["Security", "CTF"]
+---
+
+When people hear "CTF", many picture a hacker in a dark room hammering a keyboard. In reality, CTF (Capture The Flag) is more like **an escape room for programmers**: organizers hide flags in all kinds of places, and you have limited time to find and submit them.
+
+> CTF is the security community's accepted entry point: legal, fun, and a knowledge faucet.
+
+## The five classic categories
+
+| Category | The game | Skills involved |
+| -------- | -------- | --------------- |
+| **Web** | Break vulnerable websites | HTTP, SQL, frontend |
+| **Reverse** | Analyze compiled binaries | C/C++, assembly, debuggers |
+| **Pwn** | Exploit binary flaws to get a shell | Stack, heap, low-level |
+| **Crypto** | Crack cryptographic puzzles | Math, cryptography |
+| **Misc** | A grab bag: steganography, forensics, encoding | A bit of everything |
+
+Beginners should start with **Web** and **Misc** — fewer prerequisites and the fastest feedback loop.
+
+## How to start from zero
+
+1. **Try this site's mini challenge first**: the [challenge page](/challenge) hides 3 flags right in the page — begin your first capture with "View page source"
+2. **picoCTF**: CMU's beginner CTF. Problems start at "decode this Base64" difficulty and official tutorials are included
+3. **HackTheBox / TryHackMe**: guided machines that teach real skills in-browser
+4. **Join a live competition**: find a beginner-friendly event on [CTFtime](https://ctftime.org). Solving even one problem in a 48-hour event is a win
+
+## The starter toolkit
+
+```bash
+# Browser DevTools (F12) — the beginning of every web challenge
+# Burp Suite — the classic proxy for intercepting traffic
+# CyberChef — the Swiss Army knife of encoding
+# Wireshark — traffic analysis
+# Linux + Python — your two hands
+```
+
+## Three red lines
+
+1. **Practice only in authorized environments**: CTF platforms, labs, VMs you own
+2. Scanning or attacking real systems without permission is illegal
+3. Technology protects — be a white hat. The industry never has enough people who follow the rules
+
+Start your first capture: [on-site challenge](/challenge) → [picoCTF](https://picoctf.org) → [HackTheBox](https://www.hackthebox.com) 🚩

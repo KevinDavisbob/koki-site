@@ -123,6 +123,37 @@ const zh: Roadmap = {
         },
       ],
     },
+    {
+      key: "security",
+      title: "信息安全路线",
+      goal: "目标：打牢网络与编程基础，通过 CTF 和靶场练出实战手感（全程合法授权）。",
+      steps: [
+        {
+          title: "地基三件套",
+          duration: "1-2 个月",
+          description:
+            "网络基础（TCP/IP、HTTP 协议要能讲清楚三次握手）、Linux 常用命令、Python 脚本。",
+        },
+        {
+          title: "Web 安全入门",
+          duration: "2-3 个月",
+          description:
+            "从 OWASP Top 10 开始：SQL 注入、XSS、CSRF，跟着 PortSwigger Academy 的免费实验一个个做。",
+        },
+        {
+          title: "CTF 实战练兵",
+          duration: "持续",
+          description:
+            "picoCTF 入门 → BUUCTF 刷题 → 每周跟一场 CTFtime 的比赛，先玩转 Web 和 Misc 题。",
+        },
+        {
+          title: "选择主攻方向",
+          duration: "长期",
+          description:
+            "Web 安全 / 逆向 / pwn / 密码学 / 渗透测试，选一个深挖。安全领域不怕慢，就怕不深。",
+        },
+      ],
+    },
   ],
   tips: [
     "每天写代码比每周突击更有效——哪怕只有 30 分钟。",
@@ -236,6 +267,37 @@ const en: Roadmap = {
           duration: "long-term",
           description:
             "Learn React/Next.js (this site is built with it), Git collaboration and TypeScript on the way to full projects.",
+        },
+      ],
+    },
+    {
+      key: "security",
+      title: "Cybersecurity Track",
+      goal: "Goal: solid networking and programming foundations, then real hands-on skill through CTFs and labs (always authorized).",
+      steps: [
+        {
+          title: "The three foundations",
+          duration: "1-2 months",
+          description:
+            "Networking basics (explain TCP/IP and HTTP properly), everyday Linux commands, and Python scripting.",
+        },
+        {
+          title: "Web security basics",
+          duration: "2-3 months",
+          description:
+            "Start from the OWASP Top 10: SQL injection, XSS, CSRF. Work through the free PortSwigger Academy labs.",
+        },
+        {
+          title: "CTF practice",
+          duration: "ongoing",
+          description:
+            "picoCTF first, then HackTheBox or TryHackMe. Join a CTFtime competition every week — start with Web and Misc.",
+        },
+        {
+          title: "Pick a specialization",
+          duration: "long-term",
+          description:
+            "Web security / reversing / pwn / crypto / pentesting — go deep in one. In security, depth beats breadth.",
         },
       ],
     },

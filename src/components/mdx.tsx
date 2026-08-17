@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
+import type { Route } from "next";
 import type { MDXRemoteProps } from "next-mdx-remote/rsc";
+import { Link } from "@/i18n/navigation";
 
 // 供 MDX 内容（博客文章、关于页）使用的自定义组件样式。
 // 代码块样式在 globals.css 中由 rehype-pretty-code 的输出驱动。
@@ -18,14 +20,23 @@ export const mdxComponents: NonNullable<MDXRemoteProps["components"]> = {
   p: ({ children }) => (
     <p className="my-5 leading-8 text-zinc-700 dark:text-zinc-300">{children}</p>
   ),
-  a: ({ href, children }) => (
-    <a
-      href={href}
-      className="font-medium text-indigo-600 underline decoration-indigo-600/30 underline-offset-4 transition-colors hover:decoration-indigo-600 dark:text-indigo-400 dark:decoration-indigo-400/30 dark:hover:decoration-indigo-400"
-    >
-      {children}
-    </a>
-  ),
+  a: ({ href, children }) => {
+    const linkCls =
+      "font-medium text-indigo-600 underline decoration-indigo-600/30 underline-offset-4 transition-colors hover:decoration-indigo-600 dark:text-indigo-400 dark:decoration-indigo-400/30 dark:hover:decoration-indigo-400";
+    // 站内链接用 next-intl 的 Link（自动带语言前缀），外链新窗口打开
+    if (href?.startsWith("/")) {
+      return (
+        <Link href={href as Route} className={linkCls}>
+          {children}
+        </Link>
+      );
+    }
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={linkCls}>
+        {children}
+      </a>
+    );
+  },
   ul: ({ children }) => (
     <ul className="my-5 list-disc space-y-2 pl-6 text-zinc-700 marker:text-zinc-400 dark:text-zinc-300">
       {children}
