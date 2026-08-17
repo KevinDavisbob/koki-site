@@ -12,6 +12,7 @@ type NavItem = {
     | "/blog"
     | "/projects"
     | "/security"
+    | "/cars"
     | "/roadmap"
     | "/resources"
     | "/about";
@@ -28,6 +29,7 @@ export function Header() {
     { href: "/blog", label: t("blog"), exact: false },
     { href: "/projects", label: t("projects"), exact: false },
     { href: "/security", label: t("security"), exact: false },
+    { href: "/cars", label: t("cars"), exact: false },
     { href: "/roadmap", label: t("roadmap"), exact: false },
     { href: "/resources", label: t("resources"), exact: false },
     { href: "/about", label: t("about"), exact: false },
