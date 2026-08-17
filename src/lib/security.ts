@@ -13,11 +13,19 @@ export type SecurityPlatform = {
   tag: string;
 };
 
+export type SecurityTool = {
+  name: string;
+  description: string;
+  url: string;
+  category: string;
+};
+
 export type SecurityContent = {
   intro: string;
   challengeLink: string;
   roadmap: SecurityRoadmapStep[];
   platforms: SecurityPlatform[];
+  tools: SecurityTool[];
   ethics: string;
 };
 
@@ -96,6 +104,56 @@ const zh: SecurityContent = {
       tag: "赛事日历",
     },
   ],
+  tools: [
+    {
+      name: "Burp Suite",
+      description: "Web 渗透测试的事实标准：抓包、改包、重放、扫描器一应俱全。社区版免费。",
+      url: "https://portswigger.net/burp",
+      category: "Web 安全",
+    },
+    {
+      name: "CyberChef",
+      description: "GCHQ 出品的「网络瑞士军刀」：Base64、凯撒、进制转换，几百种操作随意组合。",
+      url: "https://gchq.github.io/CyberChef/",
+      category: "编码转换",
+    },
+    {
+      name: "Wireshark",
+      description: "最流行的流量分析工具，抓包看协议细节，Misc 题和网络排查必备。",
+      url: "https://www.wireshark.org",
+      category: "流量分析",
+    },
+    {
+      name: "Nmap",
+      description: "端口扫描与主机发现的标准工具，网络侦察第一步。",
+      url: "https://nmap.org",
+      category: "侦察",
+    },
+    {
+      name: "Kali Linux",
+      description: "预装数百种安全工具的渗透测试发行版，建议装在虚拟机里玩。",
+      url: "https://www.kali.org",
+      category: "系统",
+    },
+    {
+      name: "Ghidra",
+      description: "NSA 开源的逆向工程套件，反汇编和反编译的神器，逆向题入门必装。",
+      url: "https://ghidra-sre.org",
+      category: "逆向",
+    },
+    {
+      name: "John the Ripper",
+      description: "经典密码破解工具，用于 CTF 密码学题和密码强度教育。",
+      url: "https://www.openwall.com/john/",
+      category: "密码",
+    },
+    {
+      name: "Metasploit",
+      description: "漏洞利用框架，渗透测试流程自动化——仅限授权环境使用。",
+      url: "https://www.metasploit.com",
+      category: "渗透测试",
+    },
+  ],
   ethics:
     "⚠️ 安全技能请只在授权环境使用：CTF 平台、靶场、你自己搭的虚拟机。未经授权对任何真实系统进行扫描或渗透都是违法的。做「白帽子」，别做「小黑子」。",
 };
@@ -172,6 +230,56 @@ const en: SecurityContent = {
       description: "The global CTF calendar — competitions, writeups, rankings.",
       url: "https://ctftime.org",
       tag: "Calendar",
+    },
+  ],
+  tools: [
+    {
+      name: "Burp Suite",
+      description: "The de-facto standard for web pentesting: intercept, modify, replay, scan. Community edition is free.",
+      url: "https://portswigger.net/burp",
+      category: "Web",
+    },
+    {
+      name: "CyberChef",
+      description: "GCHQ's 'Cyber Swiss Army Knife': Base64, Caesar, encodings — hundreds of operations you can chain.",
+      url: "https://gchq.github.io/CyberChef/",
+      category: "Encoding",
+    },
+    {
+      name: "Wireshark",
+      description: "The most popular traffic analyzer — essential for forensics and network troubleshooting.",
+      url: "https://www.wireshark.org",
+      category: "Traffic",
+    },
+    {
+      name: "Nmap",
+      description: "The standard tool for port scanning and host discovery — the first step of recon.",
+      url: "https://nmap.org",
+      category: "Recon",
+    },
+    {
+      name: "Kali Linux",
+      description: "A pentesting distro with hundreds of tools preinstalled — run it in a VM.",
+      url: "https://www.kali.org",
+      category: "OS",
+    },
+    {
+      name: "Ghidra",
+      description: "NSA's open-source reverse-engineering suite — must-have for reverse challenges.",
+      url: "https://ghidra-sre.org",
+      category: "Reversing",
+    },
+    {
+      name: "John the Ripper",
+      description: "The classic password cracker — for CTF crypto and password-strength education.",
+      url: "https://www.openwall.com/john/",
+      category: "Passwords",
+    },
+    {
+      name: "Metasploit",
+      description: "An exploitation framework that automates pentest workflows — authorized environments only.",
+      url: "https://www.metasploit.com",
+      category: "Pentest",
     },
   ],
   ethics:

@@ -1,0 +1,76 @@
+---
+title: "Cryptography 101: From Caesar to HTTPS"
+date: "2026-08-15"
+description: "How Caesar encrypted orders 2000 years ago, and how HTTPS uses the same ideas today — the core concepts of cryptography, explained."
+tags: ["Security", "Cryptography"]
+---
+
+Cryptography sounds arcane, but the question it answers hasn't changed in two thousand years: **how do I make my message unreadable to enemies, but readable to my ally?**
+
+## The Caesar cipher: where it all began
+
+Julius Caesar shifted every letter by 3 when writing to his generals: `ATTACK` became `DWWDFN`. The general shifted back by 3 to recover it. That's the seed of **symmetric encryption**:
+
+- **Plaintext**: the original message
+- **Key**: the offset (the 3 is the "key")
+- **Ciphertext**: the scrambled output
+
+It's been cracked for 2000 years — 26 letters means only 25 offsets, so trying them all works (that's **brute force**). Try the [Caesar tool](/security) yourself.
+
+## Transposition ciphers: a different trick
+
+Caesar *substitutes* letters. Transposition *shuffles* them:
+
+```
+Plaintext: HELLO WORLD
+Rule: 5 columns, read vertically
+H E L L O
+W O R L D
+→ vertical: HWEOLRLLOD
+```
+
+Substitution plus transposition — that combination powered cipher machines into the modern era.
+
+## Symmetric encryption: one key, one lock
+
+Caesar's modern descendant: **AES**. Sender and receiver share one key for both encrypting and decrypting — fast, secure, and the workhorse behind disk encryption and WiFi (WPA2).
+
+But there's a fatal flaw: **how do you safely deliver the key?** Couriers get intercepted; meeting in person doesn't scale. That's the key-distribution problem.
+
+## Asymmetric encryption: math magic
+
+In the 1970s, RSA turned the problem inside out: **two keys**.
+
+- **Public key**: published openly, anyone can have it
+- **Private key**: known only to you
+- Anything encrypted with the public key **can only be decrypted with the private key**
+
+Think of a mailbox on the street: anyone can drop letters into the slot (public key), but only the postman has the box key (private key).
+
+RSA's security rests on "factoring big numbers is hard": multiplying two large primes is easy (`61×53=3233`), but working backwards (which two primes make 3233?) is hard. At 2048 bits, every computer on Earth combined couldn't finish before the heat death of the universe.
+
+## Hashing: the one-way fingerprint
+
+Hashing isn't encryption — it's **one-way**: any input → a fixed-length "fingerprint", impossible to reverse.
+
+- Same input always yields the same hash
+- Change one character and the hash is unrecognizable
+- SHA-256 output is always 256 bits
+
+Uses: password storage (databases keep only hashes — a leak reveals nothing), file integrity checks (was this download tampered with?), blockchains. Try the [SHA-256 tool](/security) and see how one changed character wrecks the hash.
+
+## One day in HTTPS: everything at once
+
+When you visit this site:
+
+1. **Asymmetric encryption** exchanges a one-time "session key" (solving key distribution)
+2. **Symmetric encryption (AES)** carries all subsequent traffic (fast and secure)
+3. **Hashing** verifies certificates and integrity
+
+Caesar's 3-letter shift and your HTTPS share a 2000-year lineage — the core ideas are the same.
+
+## Next steps
+
+- [CTF challenge](/challenge) levels 4 and 5 are Base64 and Caesar — you're armed now
+- CTF Wiki's crypto section, starting with classical ciphers
+- Recommended read: *The Code Book* by Simon Singh

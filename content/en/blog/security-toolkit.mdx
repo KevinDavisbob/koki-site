@@ -1,0 +1,66 @@
+---
+title: "The Security Toolkit: Your First Gear, From Zero"
+date: "2026-08-13"
+description: "A beginner's equipment list for information security: intercepting, analyzing, reversing, cracking — what each tool does and how to start."
+tags: ["Security", "Tools"]
+---
+
+Good tools make good work. This list is ordered by when you'll need each one — every item free, every item for authorized environments only.
+
+## First: browser DevTools (F12)
+
+Yes — your most important security tool. Inspect requests, tamper with parameters, read responses, run JavaScript. Half of web security challenges are solved here. **Nothing to install** — start using it today.
+
+## Second: CyberChef (the encoding Swiss Army knife)
+
+Half of CTF challenges test encodings: Base64, hex, URL encoding, Morse… CyberChef chains hundreds of operations into a pipeline — gibberish in, answer out. You can also start with the small tools in this site's [Security Zone](/security).
+
+## Third: Burp Suite (the core of web pentesting)
+
+Intercept, modify, replay. The community edition is free and enough. Pair it with your browser as a proxy and learn to:
+
+- Intercept a login request and see how credentials travel
+- Modify parameters and resend (Repeater)
+- Brute-force weak passwords (Intruder)
+
+## Fourth: Wireshark (traffic analysis)
+
+Captures packets off your network card and dissects protocols layer by layer. Every CTF "traffic analysis" Misc challenge lives here: dig a flag out of a pcap file.
+
+## Fifth: Nmap (reconnaissance)
+
+```bash
+nmap -sV 192.168.1.1      # ports and service versions
+nmap -p 80,443 example.com
+```
+
+See which ports are open and what services run — the first step of any pentest. **Only scan your own machines and labs.**
+
+## Sixth: Kali Linux (the full toolbox)
+
+Install it in a VirtualBox/VMware VM. Hundreds of security tools preinstalled — the standard OS for security learners. Skip installing tools one by one; Kali gives you a complete lab environment out of the box (DVWA and friends deploy in one command).
+
+## Seventh: Ghidra (reverse engineering)
+
+The NSA's open-source disassembler. The standard path for CTF Reverse challenges: drop the binary in, read the decompiled C, find the check logic, compute the right input.
+
+## Eighth: John the Ripper (password cracking)
+
+```bash
+john --wordlist=rockyou.txt hash.txt
+```
+
+Crack password hashes with wordlists and rules — a perfect password-strength educator. You'll see firsthand why "123456" and "password" top the weakest-password charts every year.
+
+## A suggested path
+
+1. **Play CTF first**: [picoCTF](https://picoctf.org) beginner problems + this site's [challenge page](/challenge) as a warm-up
+2. **Build foundations**: HTTP, Linux commands, Python scripting (see the security track on the [roadmap page](/roadmap))
+3. **Master tools one by one**: CyberChef → Burp → Wireshark → Nmap, each paired with a matching CTF problem
+4. **Go deep in one direction**: web security via PortSwigger Academy, reversing via Ghidra + reverse challenges
+
+## One iron rule
+
+Tutorials for these tools are everywhere — but **using them without authorization is illegal**. All practice happens on CTF platforms, labs, and VMs you own. Tools are neutral; the person wielding them decides whether they're a shield or a spear.
+
+The full list with links lives in the [Security Zone](/security) "Toolkit" section.

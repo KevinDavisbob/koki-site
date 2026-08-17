@@ -1,0 +1,70 @@
+---
+title: "SQL Injection 101: It Starts With One Quote"
+date: "2026-08-17"
+description: "Your first web security lesson: what SQL injection is, how ' OR '1'='1 bypasses authentication, and why parameterized queries stop it."
+tags: ["Security", "Web Security"]
+---
+
+SQL injection is the most classic web vulnerability — and the most beginner-friendly. It needs no fancy tools, just a single **quote**.
+
+## A normal login
+
+You type `admin` / `123456`, and the (insecurely written) backend builds:
+
+```sql
+SELECT * FROM users WHERE username = 'admin' AND password = '123456'
+```
+
+The query returns nothing → login fails. Logic is sound.
+
+## One quote changes everything
+
+Now set the username to: `' OR '1'='1`
+
+The backend builds:
+
+```sql
+SELECT * FROM users WHERE username = '' OR '1'='1' AND password = ''
+```
+
+Break it down: the first quote **closes the string early**, and `OR '1'='1'` is now executed as **code**. `'1'='1'` is always true — so even though `username = ''` is false, `false OR true` is true, and **the password check is bypassed entirely**.
+
+> Want to try it yourself? The [SQL injection hands-on lab](/security) shows a simulated login where you can watch the query get rewritten.
+
+## One more trick: comments
+
+Username: `admin'--` (in SQL, `--` starts a comment):
+
+```sql
+SELECT * FROM users WHERE username = 'admin'--' AND password = ''
+```
+
+Everything after `--` is commented out — **the password condition is deleted**, and username alone is enough. The legendary "universal password".
+
+## Real-world injection goes far beyond logins
+
+- Search boxes: `' UNION SELECT password FROM users--` (steal data)
+- URL parameters: `?id=1 OR 1=1` (dump whole tables)
+- Error messages leaking schema, time-based blind injection extracting data character by character
+
+SQL injection has sat in the OWASP Top 10 since 2008, and it's the root of many major breaches — ticket platforms and game companies included.
+
+## The fix: parameterized queries
+
+Treat input as **data**, not **code**:
+
+```python
+# Parameterized query: ? is a placeholder; input is always just data
+cursor.execute(
+    "SELECT * FROM users WHERE username = ? AND password = ?",
+    (username, password),
+)
+```
+
+Prepared statements separate query structure from data — no matter how many quotes the input contains, it stays a string. This is the shared cure for every injection-class flaw (XSS, command injection, template injection): **never trust input, never concatenate it into code**.
+
+## Next steps
+
+1. Play with both payloads in the [hands-on lab](/security)
+2. PortSwigger Academy's free SQLi labs — start with "SQL injection in WHERE clause"
+3. Build a tiny vulnerable site, then fix it with parameterized queries — teaching is the best way to learn

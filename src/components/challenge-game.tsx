@@ -7,6 +7,9 @@ const FLAGS = [
   "FLAG{source_code_is_not_a_secret}",
   "FLAG{console_is_your_friend}",
   "FLAG{headers_tell_stories}",
+  "FLAG{base64_is_everywhere}",
+  "FLAG{caesar_called_julius}",
+  "FLAG{files_hide_things}",
 ];
 
 export function ChallengeGame() {
@@ -43,8 +46,22 @@ export function ChallengeGame() {
     setFeedback("correct");
   }
 
-  const levelHints = [t("level1Hint"), t("level2Hint"), t("level3Hint")];
-  const levelTitles = [t("level1Title"), t("level2Title"), t("level3Title")];
+  const levelHints = [
+    t("level1Hint"),
+    t("level2Hint"),
+    t("level3Hint"),
+    t("level4Hint"),
+    t("level5Hint"),
+    t("level6Hint"),
+  ];
+  const levelTitles = [
+    t("level1Title"),
+    t("level2Title"),
+    t("level3Title"),
+    t("level4Title"),
+    t("level5Title"),
+    t("level6Title"),
+  ];
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-12 sm:py-16">
@@ -99,6 +116,15 @@ export function ChallengeGame() {
                 {levelHints[index]}
               </p>
             )}
+            {/* 第 5 关：凯撒加密的纸条（谜面本身） */}
+            {index === 4 && !found[index] && (
+              <div className="mt-3 rounded-lg border border-dashed border-amber-400 bg-amber-50/60 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30">
+                <p className="text-xs text-amber-600 dark:text-amber-400">📜</p>
+                <p className="mt-1 break-all font-mono text-sm text-amber-800 dark:text-amber-300">
+                  IODJ{`{fdhvdu_fdoohg_mxolxv}`}
+                </p>
+              </div>
+            )}
           </li>
         ))}
       </ol>
@@ -108,6 +134,13 @@ export function ChallengeGame() {
         aria-hidden
         dangerouslySetInnerHTML={{
           __html: "<!-- FLAG{source_code_is_not_a_secret} -->",
+        }}
+      />
+      {/* 第四关：Base64 编码的 flag，同样藏在 HTML 注释里 */}
+      <span
+        aria-hidden
+        dangerouslySetInnerHTML={{
+          __html: "<!-- 这串不是乱码：RkxBR3tiYXNlNjRfaXNfZXZlcnl3aGVyZX0= -->",
         }}
       />
 

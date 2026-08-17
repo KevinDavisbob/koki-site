@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { routing, toLocale } from "@/i18n/routing";
 import { getSecurityContent } from "@/lib/security";
 import { CipherTools } from "@/components/cipher-tools";
+import { SqlInjectionDemo } from "@/components/sql-injection-demo";
 
 export async function generateMetadata({
   params,
@@ -24,7 +25,7 @@ export default async function SecurityPage({
   await setRequestLocale(locale);
 
   const t = await getTranslations("Security");
-  const { intro, challengeLink, roadmap, platforms, ethics } =
+  const { intro, challengeLink, roadmap, platforms, tools, ethics } =
     getSecurityContent(locale);
 
   return (
@@ -41,6 +42,14 @@ export default async function SecurityPage({
       >
         {challengeLink}
       </Link>
+
+      {/* 动手实验：SQL 注入 */}
+      <section className="mt-14">
+        <h2 className="text-xl font-semibold tracking-tight">🧪 {t("labTitle")}</h2>
+        <div className="mt-5">
+          <SqlInjectionDemo />
+        </div>
+      </section>
 
       {/* 学习路线 */}
       <section className="mt-14">
@@ -102,6 +111,37 @@ export default async function SecurityPage({
         <p className="mt-6 rounded-lg border border-amber-200 bg-amber-50/60 px-4 py-3 text-sm leading-6 text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300">
           {ethics}
         </p>
+      </section>
+
+      {/* 工具包 */}
+      <section className="mt-14">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-xl font-semibold tracking-tight">🧰 {t("toolsSection")}</h2>
+          <p className="text-xs text-zinc-400 dark:text-zinc-500">{t("toolsNote")}</p>
+        </div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {tools.map((tool) => (
+            <a
+              key={tool.name}
+              href={tool.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex flex-col gap-2 rounded-xl border border-zinc-200 p-5 transition-colors hover:border-emerald-300 dark:border-zinc-800 dark:hover:border-emerald-700"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="font-semibold transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                  {tool.name}
+                </h3>
+                <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                  {tool.category}
+                </span>
+              </div>
+              <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                {tool.description}
+              </p>
+            </a>
+          ))}
+        </div>
       </section>
 
       {/* 密码学小工具 */}
