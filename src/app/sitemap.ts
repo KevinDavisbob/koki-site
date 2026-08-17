@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/security",
     "/challenge",
     "/cars",
+    "/physics",
     "/roadmap",
     "/resources",
     "/books",
