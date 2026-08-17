@@ -6,8 +6,12 @@
   "Nav": {
     "home": "首页",
     "blog": "博客",
+    "projects": "项目",
+    "roadmap": "路线",
     "resources": "资料",
-    "about": "关于"
+    "about": "关于",
+    "books": "书单",
+    "archive": "归档"
   },
   "Home": {
     "greeting": "你好，我是 Koki",
@@ -45,6 +49,37 @@
       "intermediate": "进阶",
       "reference": "参考"
     }
+  },
+  "Projects": {
+    "title": "项目作品",
+    "description": "我做过的项目：课程设计、比赛作品和业余折腾，都在这儿。",
+    "demo": "在线演示",
+    "repo": "GitHub",
+    "empty": "还没有项目，敬请期待。"
+  },
+  "Roadmap": {
+    "title": "学习路线",
+    "description": "从零开始学编程的路线图：每一步该学什么、用什么资源、花多少时间。",
+    "resourcesLink": "配套资料见「资料」页 →",
+    "roadmapTips": "通用建议"
+  },
+  "Books": {
+    "title": "书单",
+    "description": "在读的、读完的、想读的书，附上简短笔记。",
+    "reading": "在读",
+    "finished": "已读",
+    "want": "想读",
+    "rating": "分",
+    "empty": "书单还是空的，等我来填。"
+  },
+  "Archive": {
+    "title": "文章归档",
+    "description": "按年份归档的全部文章。",
+    "backToBlog": "返回博客",
+    "empty": "还没有文章。"
+  },
+  "Blog": {
+    "archiveLink": "按年份归档 →"
   },
   "NotFound": {
     "title": "页面不存在",

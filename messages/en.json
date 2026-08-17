@@ -6,8 +6,12 @@
   "Nav": {
     "home": "Home",
     "blog": "Blog",
+    "projects": "Projects",
+    "roadmap": "Roadmap",
     "resources": "Resources",
-    "about": "About"
+    "about": "About",
+    "books": "Bookshelf",
+    "archive": "Archive"
   },
   "Home": {
     "greeting": "Hi, I'm Koki",
@@ -45,6 +49,37 @@
       "intermediate": "Intermediate",
       "reference": "Reference"
     }
+  },
+  "Projects": {
+    "title": "Projects",
+    "description": "Things I've built: coursework, competition entries, and side projects.",
+    "demo": "Live demo",
+    "repo": "GitHub",
+    "empty": "No projects yet — stay tuned."
+  },
+  "Roadmap": {
+    "title": "Learning Roadmap",
+    "description": "A step-by-step path for learning to code from zero: what to learn, with what resources, and how long it takes.",
+    "resourcesLink": "Matching resources on the Resources page →",
+    "roadmapTips": "General advice"
+  },
+  "Books": {
+    "title": "Bookshelf",
+    "description": "Books I'm reading, have read, or want to read — with short notes.",
+    "reading": "Reading",
+    "finished": "Finished",
+    "want": "Want to read",
+    "rating": "/5",
+    "empty": "The shelf is empty for now."
+  },
+  "Archive": {
+    "title": "Archive",
+    "description": "All posts, grouped by year.",
+    "backToBlog": "Back to blog",
+    "empty": "No posts yet."
+  },
+  "Blog": {
+    "archiveLink": "Archive by year →"
   },
   "NotFound": {
     "title": "Page not found",

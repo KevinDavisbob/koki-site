@@ -36,7 +36,15 @@ export default async function BlogPage({
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-12 sm:py-16">
-      <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+      <div className="flex items-baseline justify-between gap-4">
+        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+        <Link
+          href="/archive"
+          className="shrink-0 text-sm text-indigo-600 transition-colors hover:text-indigo-500 dark:text-indigo-400"
+        >
+          {t("archiveLink")}
+        </Link>
+      </div>
       <p className="mt-3 text-zinc-600 dark:text-zinc-400">
         {t("description")}
       </p>

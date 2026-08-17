@@ -7,7 +7,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { siteConfig } from "@/lib/site";
 
 type NavItem = {
-  href: "/" | "/blog" | "/resources" | "/about";
+  href: "/" | "/blog" | "/projects" | "/roadmap" | "/resources" | "/about";
   label: string;
   exact: boolean;
 };
@@ -19,6 +19,8 @@ export function Header() {
   const nav: NavItem[] = [
     { href: "/", label: t("home"), exact: true },
     { href: "/blog", label: t("blog"), exact: false },
+    { href: "/projects", label: t("projects"), exact: false },
+    { href: "/roadmap", label: t("roadmap"), exact: false },
     { href: "/resources", label: t("resources"), exact: false },
     { href: "/about", label: t("about"), exact: false },
   ];
@@ -37,12 +39,12 @@ export function Header() {
           <span className="text-indigo-500">.</span>
         </Link>
 
-        <nav className="flex items-center gap-1 sm:gap-2">
+        <nav className="flex items-center gap-0.5 overflow-x-auto sm:gap-1">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
+              className={`shrink-0 rounded-md px-2 py-1.5 text-sm transition-colors sm:px-3 ${
                 isActive(item)
                   ? "font-medium text-indigo-600 dark:text-indigo-400"
                   : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
