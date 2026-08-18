@@ -24,7 +24,6 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState<GroupKey | null>(null);
   const clusterRef = useRef<HTMLDivElement>(null);
-  const [hoverable, setHoverable] = useState(false);
 
   const groups: Record<GroupKey, Item[]> = {
     labs: [
@@ -48,16 +47,9 @@ export function Header() {
   const groupActive = (items: Item[]) =>
     items.some((i) => isActive(i.href, i.exact));
 
-  // 仅桌面（可悬停设备）启用 hover 展开，避免与触屏点击冲突
-  useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const update = () => setHoverable(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
   // 关闭：点击外部 / Esc
+  // 注意：不做 hover 展开——手机浏览器点击时会先模拟 mouseenter 再触发 click，
+  // 两套逻辑会互相打架（先开再关，表现为点不开）。统一用点击切换。
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (e: PointerEvent) => {
@@ -122,16 +114,7 @@ export function Header() {
             const items = groups[key];
             const isOpen = open === key;
             return (
-              <div
-                key={key}
-                className="relative"
-                {...(hoverable
-                  ? {
-                      onMouseEnter: () => setOpen(key),
-                      onMouseLeave: () => setOpen(null),
-                    }
-                  : {})}
-              >
+              <div key={key} className="relative">
                 <button
                   type="button"
                   aria-haspopup="true"
