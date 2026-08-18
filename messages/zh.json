@@ -28,7 +28,8 @@
     "title": "博客",
     "description": "关于技术、工具与生活的文章。",
     "all": "全部",
-    "empty": "还没有文章，敬请期待。"
+    "empty": "还没有文章，敬请期待。",
+    "archiveLink": "按年份归档 →"
   },
   "Post": {
     "backToBlog": "返回博客",
@@ -80,9 +81,6 @@
     "description": "按年份归档的全部文章。",
     "backToBlog": "返回博客",
     "empty": "还没有文章。"
-  },
-  "Blog": {
-    "archiveLink": "按年份归档 →"
   },
   "Security": {
     "title": "安全专区",

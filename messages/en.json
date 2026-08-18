@@ -28,7 +28,8 @@
     "title": "Blog",
     "description": "Articles about tech, tools, and life.",
     "all": "All",
-    "empty": "No posts yet — stay tuned."
+    "empty": "No posts yet — stay tuned.",
+    "archiveLink": "Archive by year →"
   },
   "Post": {
     "backToBlog": "Back to blog",
@@ -80,9 +81,6 @@
     "description": "All posts, grouped by year.",
     "backToBlog": "Back to blog",
     "empty": "No posts yet."
-  },
-  "Blog": {
-    "archiveLink": "Archive by year →"
   },
   "Security": {
     "title": "Security Zone",

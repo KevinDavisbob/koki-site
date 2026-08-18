@@ -5,6 +5,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { BootScreen } from "@/components/boot-screen";
 import { routing, toLocale } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site";
 import "../globals.css";
@@ -59,6 +60,11 @@ export default async function LocaleLayout({
             <Footer />
           </NextIntlClientProvider>
         </ThemeProvider>
+        <BootScreen />
+        {/* 无 JS 环境下隐藏启动界面，避免永久遮住页面 */}
+        <noscript>
+          <style>{".boot-screen{display:none}"}</style>
+        </noscript>
       </body>
     </html>
   );
