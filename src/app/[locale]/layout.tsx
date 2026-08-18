@@ -7,6 +7,8 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { BootScreen } from "@/components/boot-screen";
 import { BackToTop } from "@/components/back-to-top";
+import { SearchDialog } from "@/components/search-dialog";
+import { getAllPosts } from "@/lib/posts";
 import { routing, toLocale } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site";
 import "../globals.css";
@@ -51,6 +53,14 @@ export async function generateMetadata({
         `${locale === routing.defaultLocale ? "" : `/${locale}`}/opengraph-image`,
       ],
     },
+    alternates: {
+      types: {
+        // 绝对 URL：相对路径会被解析到当前页面路径上
+        "application/rss+xml": `${siteConfig.url}${
+          locale === routing.defaultLocale ? "" : `/${locale}`
+        }/feed.xml`,
+      },
+    },
   };
 }
 
@@ -64,6 +74,14 @@ export default async function LocaleLayout({
   await setRequestLocale(validLocale);
 
   const messages = await getMessages();
+
+  // 搜索索引：只传可序列化的字段
+  const searchablePosts = getAllPosts(validLocale).map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    tags: p.tags,
+  }));
 
   return (
     <html
@@ -83,6 +101,7 @@ export default async function LocaleLayout({
             <main className="flex-1">{children}</main>
             <Footer />
             <BackToTop />
+            <SearchDialog posts={searchablePosts} />
           </NextIntlClientProvider>
         </ThemeProvider>
         <BootScreen />

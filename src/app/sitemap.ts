@@ -18,6 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/books",
     "/archive",
     "/about",
+    "/friends",
+    "/guestbook",
   ];
 
   for (const locale of routing.locales) {

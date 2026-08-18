@@ -20,6 +20,7 @@ const DIRECT: { href: "/" | "/blog" | "/projects" | "/about"; exact: boolean }[]
 
 export function Header() {
   const t = useTranslations("Nav");
+  const tSearch = useTranslations("Search");
   const pathname = usePathname();
   const [open, setOpen] = useState<GroupKey | null>(null);
   const clusterRef = useRef<HTMLDivElement>(null);
@@ -37,6 +38,8 @@ export function Header() {
       { href: "/resources", label: t("resources"), exact: false },
       { href: "/books", label: t("books"), exact: false },
       { href: "/archive", label: t("archive"), exact: false },
+      { href: "/friends", label: t("friends"), exact: false },
+      { href: "/guestbook", label: t("guestbook"), exact: false },
     ],
   };
 
@@ -181,6 +184,26 @@ export function Header() {
               </div>
             );
           })}
+          <button
+            type="button"
+            aria-label={tSearch("label")}
+            onClick={() => window.dispatchEvent(new Event("open-search"))}
+            className="rounded-md p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+          >
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </button>
           <LanguageSwitcher />
           <ThemeToggle />
         </div>

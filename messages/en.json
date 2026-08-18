@@ -17,7 +17,9 @@
     "archive": "Archive",
     "labs": "Labs",
     "learn": "Learn",
-    "challenge": "Challenge"
+    "challenge": "Challenge",
+    "friends": "Friends",
+    "guestbook": "Guestbook"
   },
   "Home": {
     "greeting": "Hi, I'm koki",
@@ -349,6 +351,35 @@
   },
   "UI": {
     "backToTop": "Back to top"
+  },
+  "Friends": {
+    "title": "Friends",
+    "description": "Cool sites from friends — come and visit.",
+    "empty": "No friends here yet — let's exchange links!",
+    "applyTitle": "Exchange links",
+    "applyHintPrefix": "Leave a message on the guestbook, or email",
+    "applyHintSuffix": "with your site name, URL, and a one-line description.",
+    "visit": "Visit"
+  },
+  "Guestbook": {
+    "title": "Guestbook",
+    "description": "Since you're here — leave a note.",
+    "listTitle": "All messages",
+    "notice": "Messages are stored directly in the GitHub repo. Be kind.",
+    "nickname": "Nickname",
+    "message": "Message",
+    "website": "Website (optional)",
+    "submit": "Post message",
+    "submitting": "Posting…",
+    "success": "✓ Posted! Thanks for stopping by.",
+    "error": "Failed to post, please try again later.",
+    "empty": "No messages yet — be the first!"
+  },
+  "Search": {
+    "label": "Search",
+    "placeholder": "Search posts…",
+    "noResults": "No matching posts",
+    "hint": "↑↓ select · Enter open · Esc close"
   },
   "Footer": {
     "rights": "All rights reserved.",

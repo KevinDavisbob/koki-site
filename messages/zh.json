@@ -17,7 +17,9 @@
     "archive": "归档",
     "labs": "实验室",
     "learn": "学习",
-    "challenge": "挑战"
+    "challenge": "挑战",
+    "friends": "友链",
+    "guestbook": "留言板"
   },
   "Home": {
     "greeting": "你好，我是 koki",
@@ -349,6 +351,35 @@
   },
   "UI": {
     "backToTop": "回到顶部"
+  },
+  "Friends": {
+    "title": "友链",
+    "description": "朋友们的小站，欢迎互访。",
+    "empty": "友链还是空的——想交换友链的话，欢迎联系我。",
+    "applyTitle": "交换友链",
+    "applyHintPrefix": "来留言板留言，或发邮件到",
+    "applyHintSuffix": "，附上你的站点名称、地址和一句简介。",
+    "visit": "去看看"
+  },
+  "Guestbook": {
+    "title": "留言板",
+    "description": "来都来了，留句话吧。",
+    "listTitle": "全部留言",
+    "notice": "留言会直接保存到 GitHub 仓库，请保持友善。",
+    "nickname": "昵称",
+    "message": "留言内容",
+    "website": "个人网站（可选）",
+    "submit": "发布留言",
+    "submitting": "发布中…",
+    "success": "✓ 留言成功！感谢你的足迹。",
+    "error": "发布失败，请稍后再试。",
+    "empty": "还没有留言，来抢沙发！"
+  },
+  "Search": {
+    "label": "搜索",
+    "placeholder": "搜索文章…",
+    "noResults": "没有找到相关文章",
+    "hint": "↑↓ 选择 · Enter 打开 · Esc 关闭"
   },
   "Footer": {
     "rights": "保留所有权利。",
