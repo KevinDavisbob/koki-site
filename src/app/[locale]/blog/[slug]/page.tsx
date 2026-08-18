@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { getAllPosts, getPost } from "@/lib/posts";
 import { routing, toLocale } from "@/i18n/routing";
+import { siteConfig } from "@/lib/site";
+import { ReadingProgress } from "@/components/reading-progress";
 
 // 注意：Next 16 中 generateStaticParams 的 params 是同步对象（页面组件的才是 Promise）
 export function generateStaticParams({
@@ -27,11 +29,11 @@ export async function generateMetadata({
     title: post.frontmatter.title,
     description: post.frontmatter.description,
     alternates: {
-      canonical: `${locale === routing.defaultLocale ? "" : `/${locale}`}/blog/${slug}`,
+      canonical: `${siteConfig.url}${locale === routing.defaultLocale ? "" : `/${locale}`}/blog/${slug}`,
       languages: Object.fromEntries(
         routing.locales.map((l) => [
           l,
-          `${l === routing.defaultLocale ? "" : `/${l}`}/blog/${slug}`,
+          `${siteConfig.url}${l === routing.defaultLocale ? "" : `/${l}`}/blog/${slug}`,
         ]),
       ),
     },
@@ -57,7 +59,9 @@ export default async function PostPage({
   ).format(new Date(`${frontmatter.date}T00:00:00`));
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-6 py-12 sm:py-16">
+    <>
+      <ReadingProgress />
+      <article className="mx-auto w-full max-w-3xl px-6 py-12 sm:py-16">
       <Link
         href="/blog"
         className="text-sm text-zinc-500 transition-colors hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
@@ -94,6 +98,7 @@ export default async function PostPage({
       <div className="mt-10 border-t border-zinc-200 pt-8 dark:border-zinc-800">
         {post.content}
       </div>
-    </article>
+      </article>
+    </>
   );
 }

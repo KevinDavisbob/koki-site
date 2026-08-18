@@ -14,7 +14,10 @@
     "resources": "Resources",
     "about": "About",
     "books": "Bookshelf",
-    "archive": "Archive"
+    "archive": "Archive",
+    "labs": "Labs",
+    "learn": "Learn",
+    "challenge": "Challenge"
   },
   "Home": {
     "greeting": "Hi, I'm koki",
@@ -22,7 +25,9 @@
     "viewBlog": "Read the blog",
     "aboutMe": "About me",
     "recentPosts": "Recent posts",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "sections": "Explore",
+    "sectionsHint": "From tech notes to car knowledge — a little bit of everything."
   },
   "Blog": {
     "title": "Blog",
@@ -341,6 +346,9 @@
   },
   "Theme": {
     "toggle": "Toggle theme"
+  },
+  "UI": {
+    "backToTop": "Back to top"
   },
   "Footer": {
     "rights": "All rights reserved.",

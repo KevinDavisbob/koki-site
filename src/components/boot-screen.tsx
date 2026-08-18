@@ -34,18 +34,23 @@ export function BootScreen() {
   useEffect(() => {
     if (checkedRef.current) return;
     checkedRef.current = true;
-    try {
-      if (
-        sessionStorage.getItem("boot-shown") ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
-        setPhase("done");
-        return;
+    // 通过 rAF 回调执行检查：effect 内同步 setState 违反 react-hooks 规则，
+    // 且避免 dev StrictMode 双挂载下第二次挂载被自己写入的标记跳过
+    const raf = requestAnimationFrame(() => {
+      try {
+        if (
+          sessionStorage.getItem("boot-shown") ||
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
+          setPhase("done");
+          return;
+        }
+        sessionStorage.setItem("boot-shown", "1");
+      } catch {
+        // sessionStorage 不可用（隐私模式等）时直接播放
       }
-      sessionStorage.setItem("boot-shown", "1");
-    } catch {
-      // sessionStorage 不可用（隐私模式等）时直接播放
-    }
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   // Esc 跳过

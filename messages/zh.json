@@ -14,7 +14,10 @@
     "resources": "资料",
     "about": "关于",
     "books": "书单",
-    "archive": "归档"
+    "archive": "归档",
+    "labs": "实验室",
+    "learn": "学习",
+    "challenge": "挑战"
   },
   "Home": {
     "greeting": "你好，我是 koki",
@@ -22,7 +25,9 @@
     "viewBlog": "阅读博客",
     "aboutMe": "关于我",
     "recentPosts": "最近文章",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "sections": "探索",
+    "sectionsHint": "从技术笔记到汽车知识，这里什么都有。"
   },
   "Blog": {
     "title": "博客",
@@ -341,6 +346,9 @@
   },
   "Theme": {
     "toggle": "切换主题"
+  },
+  "UI": {
+    "backToTop": "回到顶部"
   },
   "Footer": {
     "rights": "保留所有权利。",

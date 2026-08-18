@@ -6,6 +6,19 @@ import { toLocale } from "@/i18n/routing";
 import { getAllPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
 
+/** 板块卡片：标题/描述复用各板块自己的翻译命名空间 */
+const SECTION_ITEMS = [
+  { href: "/blog", emoji: "📝", ns: "Blog" },
+  { href: "/projects", emoji: "🛠️", ns: "Projects" },
+  { href: "/security", emoji: "🛡️", ns: "Security" },
+  { href: "/cars", emoji: "🚗", ns: "Cars" },
+  { href: "/physics", emoji: "⚡", ns: "Physics" },
+  { href: "/roadmap", emoji: "🗺️", ns: "Roadmap" },
+  { href: "/resources", emoji: "📚", ns: "Resources" },
+  { href: "/books", emoji: "📖", ns: "Books" },
+  { href: "/challenge", emoji: "🚩", ns: "Challenge" },
+] as const;
+
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale: rawLocale } = await params;
   const locale = toLocale(rawLocale);
@@ -14,6 +27,13 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const t = await getTranslations("Home");
 
   const recentPosts = getAllPosts(locale).slice(0, 3);
+
+  const sections = await Promise.all(
+    SECTION_ITEMS.map(async (s) => {
+      const ns = await getTranslations(s.ns);
+      return { ...s, title: ns("title"), description: ns("description") };
+    }),
+  );
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6">
@@ -55,6 +75,41 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
           >
             {siteConfig.social.email}
           </a>
+        </div>
+      </section>
+
+      {/* 探索：板块导航网格 */}
+      <section className="pb-20">
+        <h2 className="mb-2 text-xl font-semibold tracking-tight">
+          {t("sections")}
+        </h2>
+        <p className="mb-8 text-sm text-zinc-500 dark:text-zinc-400">
+          {t("sectionsHint")}
+        </p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {sections.map((s) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="group block rounded-xl border border-zinc-200 p-5 transition-colors hover:border-indigo-300 dark:border-zinc-800 dark:hover:border-indigo-700"
+            >
+              <span className="text-2xl" aria-hidden="true">
+                {s.emoji}
+              </span>
+              <h3 className="mt-3 text-lg font-semibold tracking-tight transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                {s.title}
+              </h3>
+              <p className="mt-1.5 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
+                {s.description}
+              </p>
+              <span
+                className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-indigo-600 transition-transform duration-200 group-hover:translate-x-0.5 dark:text-indigo-400"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
