@@ -3,6 +3,7 @@ node_modules/
 
 # VitePress generated files
 .vitepress/cache/
+docs/.vitepress/cache/
 .vitepress/dist/
 dist/
 
@@ -25,4 +26,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-

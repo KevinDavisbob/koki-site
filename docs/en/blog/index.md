@@ -1,0 +1,1 @@
+<BlogReplica locale="en" />
